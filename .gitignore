@@ -1,0 +1,9 @@
+#Data Files
+*.h5
+
+#VS Code files
+.vscode/
+*.code-workspace
+
+#Python
+*.py[cod]
