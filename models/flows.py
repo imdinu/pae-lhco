@@ -79,9 +79,9 @@ class MAF(Flow):
         """Use bijector chain to make a TransformedDistribution starting 
         from a Normal base distribution.""" 
         self.distribution = tfd.TransformedDistribution(
-                tfd.Normal(loc=0., scale=1.),
-                bijector=self.chain,
-                event_shape=[n_dims])
+                distribution=tfd.Sample(tfd.Normal(loc=0., scale=1.),
+                                        sample_shape=[n_dims]),
+                bijector=self.chain)
 
     def call(self, x):
         """Returns the log likelihood of the input samples"""

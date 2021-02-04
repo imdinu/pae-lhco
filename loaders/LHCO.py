@@ -53,7 +53,9 @@ class LhcoRnDLoader(AbstractDataloader):
               training data. These features of the training data will be outputed
               separately by the 'make_train_val' and 'make_test' methods 
         """
+        # Select the set of features
         columns = FEATURE_SETS[features]
+        self._exclude_keys = exclude
 
         # Read files and create dataframe dictionary
         self._dataframes = {
@@ -72,7 +74,7 @@ class LhcoRnDLoader(AbstractDataloader):
         """Applies scaling if scaler is defined, otherwise converts to numpy
         
         Args:
-          fit_key: Key of the dataset to be used as the scaler training
+          fit_key: Key of the dataset to be used for the scaler training
         """
 
         # Convert to numpy in absence of scaler
@@ -134,6 +136,7 @@ class LhcoRnDLoader(AbstractDataloader):
         if val_split > 0 :
             x_train, x_test, y_train, y_test = train_test_split(
                 full_set, excluded, test_size=val_split)
+        
         else:
             x_train, x_test, y_train, y_test = full_set, None, excluded, None
 
@@ -141,9 +144,11 @@ class LhcoRnDLoader(AbstractDataloader):
         output = {
             'x_train': x_train,
             'x_valid': x_test,
-            'excl_train': y_train,
-            'excl_valid': y_test
         }
+        # Add the excluded features
+        for i,key in enumerate(self._exclude_keys):
+            output[key+'_train'] = y_train[:,i]
+            output[key+'_valid'] = y_test[:,i] if y_test is not None else None
         return output
 
     def make_test(self, sample_size, data_ratios, replace=True):
@@ -200,9 +205,11 @@ class LhcoRnDLoader(AbstractDataloader):
         # Construct and return output
         output = {
             'x_test': full_set,
-            'excl_test': excluded,
             'labels': labels
         }
+        for i,key in enumerate(self._exclude_keys):
+            output[key+'_test'] = excluded[:,i]
+
         return output
 
     def _check_data_ratios(self, sample_size, 

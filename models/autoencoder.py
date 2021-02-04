@@ -1,4 +1,4 @@
-""" Module of keras autoencoders created with sublassing"""
+""" Module of keras autoencoders created with subclassing"""
 
 from functools import reduce
 from abc import ABC, abstractmethod
@@ -61,8 +61,9 @@ class DenseEncoder(tfkl.Layer):
                             inputs)
         return self.output_layer(activation)
 
+
 class DenseDecoder(tfkl.Layer):
-     """Fully connected decoders made of 'Dense' layers."""
+    """Fully connected decoders made of 'Dense' layers."""
     def __init__(self,
                  output_dim,
                  units_list,

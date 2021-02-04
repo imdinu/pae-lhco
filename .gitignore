@@ -5,5 +5,13 @@
 .vscode/
 *.code-workspace
 
+#plots
+plots/
+
 #Python
 *.py[cod]
+.ipynb_checkpoints/
+
+#misc files
+*.zip
+AE_loader/

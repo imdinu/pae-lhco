@@ -20,11 +20,16 @@ ALL_FEATURES = ['pt1', 'eta1', 'phi1', 'E1', 'm1', 'nc1', 'nisj1', 'nesj1',
         'eRing2_2', 'eRing3_2', 'eRing4_2', 'eRing5_2', 'eRing6_2', 'eRing7_2',
         'eRing8_2', 'eRing9_2', 'mjj', 'nj']
 
+TRIMMED_FEATURES = ['1tau1', '1tau2', '21tau1', '21tau2', '32tau1', '32tau2',
+        'eRing0_1', 'eRing0_2', 'eRing1_1', 'eRing1_2', 'eRing3_1', 'eRing3_2',
+        'm1', 'm2', 'nc1', 'nc2', 'nisj1', 'nisj2', 'pt1', 'pt2', 'mjj']
+
 MINIMAL_FEATURES = ['pt1', 'eta1', 'E1', 'm1', '21tau1', '32tau1', 
         'pt2', 'eta2', 'E2', 'm2', '21tau2', '32tau2', 'mjj']
 
 FEATURE_SETS = {
         'all': ALL_FEATURES,
         'continuous': CONTINUOUS_FEATURES,
+        'trimmed': TRIMMED_FEATURES,
         'minimal': MINIMAL_FEATURES
     }

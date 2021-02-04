@@ -1,0 +1,202 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+from models.autoencoder import DenseAutoencoder
+from models.flows import MAF
+from models.nn import PaeBuilder
+
+import sys
+import os
+import tensorflow as tf
+import tensorflow_probability as tfp
+import tensorflow.keras as tfk
+
+sys.path.append('../')
+os.environ["CUDA_VISIBLE_DEVICES"]="-1" 
+
+from loaders.LHCO import LhcoRnDLoader
+from sklearn.preprocessing import MinMaxScaler, QuantileTransformer
+from sklearn.mixture import GaussianMixture
+
+def mjj_cut_plot(ano_score, mjj, 
+                 prc: int = 75, 
+                 bins: int = 60, 
+                 x_min_prc: float = 0.5,
+                 x_max_prc: float = 99.5,
+                 score_name: str = 'anomaly score', 
+                 save_path: str = None,
+                 mjj_range = None):
+    
+    x_min = np.percentile(ano_score, x_min_prc)
+    x_max = np.percentile(ano_score, x_max_prc)
+    x_prc = np.percentile(ano_score, prc)
+    i_prc = np.where(ano_score >= x_prc)[0]
+
+    plt.figure(figsize=(16,6))
+    plt.subplot(1,2,1)
+    plt.hist(ano_score, bins=bins, density=True, alpha=.8, 
+             label='Test dataset')
+    plt.xlim(x_min,x_max)
+    plt.axvline(x_prc, color='red', label=f'{prc}''$^{th}$ percentile')
+    plt.legend()
+    plt.xlabel(f'{score_name}')
+
+    plt.subplot(1,2,2)
+    n_bkg, b, _ = plt.hist(mjj, bins=bins, density=True, alpha=.5, 
+                       label='Full test datset', range=mjj_range)
+    n_sig, _, _ = plt.hist(mjj[i_prc], bins=b, density=True, alpha=.5, 
+                       label=f'{prc}''$^{th}$'f' {score_name} percentile+',
+                       range=mjj_range)
+    plt.xlabel('$m_{jj}$')
+    plt.legend()
+    plt.tight_layout()
+    if save_path is not None:
+        plt.savefig(save_path)
+    plt.show(block=False)
+    return mjj.ravel(), mjj[i_prc].ravel()
+
+if __name__ == '__main__':
+    print("Using Tensorflow:",tf.__version__)
+    scaler = QuantileTransformer(output_distribution='uniform')
+    files = {
+        'bkg':'../data/MC_bkgHLF_merged.h5',
+        'bbox':'../data/BBOX2_bkgHLF_merged.h5',
+    }
+
+    train_fractions = {
+        'bkg':1
+    }
+
+    test_fractions = {
+        'bbox':1
+    }
+    print("Loading data ...")
+    loader = LhcoRnDLoader(files, 'all', scaler)
+    loader.preprocessing('bkg')
+    train = loader.make_train_val(1_000_000, train_fractions, val_split=.2)
+    test = loader.make_test(1_000_000, test_fractions, replace=False)
+
+    print("Computing mjj density ...")
+    GMM = GaussianMixture
+    gmm = GMM(n_components=200, covariance_type='full').fit(test["mjj_test"].reshape(-1, 1))
+    plt.figure(figsize=(12,8))
+    _, b, _ = plt.hist(train["mjj_train"], bins=50, label='mjj true', alpha=.5, density=True)
+    sample = gmm.sample(train["mjj_train"].shape[0])
+    plt.hist(sample[0], bins=b, label='mjj GMM', alpha=.5, density=True)
+    plt.legend()
+    plt.savefig("./plots/mjj_density.png")
+    plt.show(block=False)
+
+    weights2 = gmm.score_samples(train["mjj_train"].reshape(-1, 1))
+    weights2_valid = gmm.score_samples(train["mjj_valid"].reshape(-1, 1))
+
+    plt.figure(figsize=(12,8))
+    plt.scatter(train["mjj_train"], 1/np.exp(weights2))
+    plt.savefig("./plots/mjj_weights.png")
+    plt.show(block=False)  
+
+    tfd = tfp.distributions
+    tfb = tfp.bijectors
+    tfkl = tfk.layers
+
+    print("Building models ...")
+    builder = PaeBuilder()
+
+    ae_config = {
+        'input_dim':47, 
+        'encoding_dim':10, 
+        'units_list':[30],
+        'weight_reg':tfk.regularizers.l1(1e-6),
+        'output_activation':tf.nn.sigmoid
+    }
+    nf_config = {
+        'n_dims':10, 
+        'n_layers':5, 
+        'units':[32 for i in range(4)]
+    }
+    optimizer_ae = {
+        'lr': 0.05
+    }
+    optimizer_nf = {
+        'lr': 0.005
+    }
+
+    builder.make_ae_model(DenseAutoencoder, ae_config)
+    builder.make_nf_optimizer(tfk.optimizers.Adam, optimizer_ae)
+    builder.make_nf_model(MAF, nf_config)
+    builder.make_nf_optimizer(tfk.optimizers.Adam, optimizer_nf)
+    builder.compile_ae()
+    builder.compile_nf()
+    pae = builder.pae
+
+    ae_train = {
+        'batch_size':200,
+        'epochs':180,
+        'sample_weight':1/np.exp(weights2),
+        'validation_data':(train["x_valid"],train["x_valid"],1/np.exp(weights2_valid)),
+        'callbacks':tfk.callbacks.ReduceLROnPlateau(
+            factor=0.2,
+            patience=10,
+            verbose=1
+        )
+    }
+
+    nf_train = {
+        'batch_size':200,
+        'epochs':60,
+        'validation_data':(train["x_valid"],train["x_valid"]),
+        'callbacks':tfk.callbacks.ReduceLROnPlateau(
+            factor=0.2,
+            patience=5,
+            verbose=1
+        )
+    }
+    with tf.device("/device:CPU:0"):
+        pae.fit(train["x_train"],ae_train,nf_train)
+
+    from utils.plotting import loss_plot, latent_space_plot, \
+                           sculpting_plot, roc_plot
+
+    loss_plot(pae.history, save_path="./plots/train.png")
+    z_true = pae.ae.encode(train['x_train'])
+    z_sample = pae.nf.sample(train['x_train'].shape[0])
+
+    latent_space_plot(z_true, z_sample, save_path='plots/latent_space.png')
+
+    mse = pae.reco_error(train['x_train'])
+    pae.compute_implicit_sigma(train['x_valid'])
+    ascore = -pae.anomaly_score(train['x_train'])
+
+    mjj_cut_plot(mse, train['mjj_train'], prc=80, score_name='MSE', save_path='./plots/mse_cut_bkg.png')
+    mjj_cut_plot(ascore, train['mjj_train'], prc=80, score_name='NLL', save_path='./plots/nll_cut_bkg.png')
+
+    ano_scores = {
+        'MSE': mse,
+        'NLL': ascore
+    }
+
+    sculpting_plot(ano_scores, train['mjj_train'], max_prc=99, save_path='./plots/mass_sculpting_bkg.png')
+
+    ascore_test = -pae.anomaly_score(test['x_test'])
+    bkg, data = mjj_cut_plot(ascore_test, test['mjj_test'], prc=99, score_name='NLL', bins=100, 
+                             save_path='./plots/cut_bbox1_samescaler.png')#,
+                             #mjj_range=(3200,4800) )
+
+    import pyBumpHunter as BH
+    
+    weights = np.repeat(1/(bkg.shape[0]/data.shape[0]),bkg.shape[0])
+    hunter = BH.BumpHunter(rang=(3200,4800),
+                        width_min=2,
+                        width_max=6,
+                        width_step=1,
+                        scan_step=1,
+                        Npe=10000,
+                        Nworker=1,
+                        seed=666,
+                        weights=weights
+                    )
+    hunter.BumpScan(data,bkg)
+    hunter.PlotBump(data,bkg,filename='./plots/bump_bbox2.png')
+    hunter.PrintBumpTrue(data,bkg)
+    
