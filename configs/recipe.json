@@ -1,0 +1,12 @@
+{
+    "npix": [32, 64, 128],
+    "img_width": [0.8, 1.6, 2.4],
+    "rotate": false,
+    "stitch_jets": false,
+    "trim": [true, false],
+    "offset": 0.5,
+    "norm": true,
+    "avg_centroid": false,
+    "R1": 1.0,
+    "R2": 0.2
+}

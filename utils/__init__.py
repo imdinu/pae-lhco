@@ -1,3 +1,5 @@
+import json
+
 CONTINUOUS_FEATURES = ['pt1', 'eta1', 'phi1', 'E1', 'm1', '1tau1', '2tau1', 
         '3tau1', '32tau1', '21tau1', 'pt2', 'eta2', 'phi2', 'E2', 'm2',
         '1tau2', '2tau2', '3tau2', '32tau2', '21tau2',
@@ -17,3 +19,8 @@ ALL_FEATURES = ['pt1', 'eta1', 'phi1', 'E1', 'm1', 'nc1', 'nisj1', 'nesj1',
 
 MINMAL_FEATURES = ['pt1', 'eta1', 'E1', 'm1', '21tau1', '32tau1', 
         'pt2', 'eta2', 'E2', 'm2', '21tau2', '32tau2']
+
+def from_json(path):
+    with open(path) as json_file:
+        cfg = json.load(json_file)
+    return cfg

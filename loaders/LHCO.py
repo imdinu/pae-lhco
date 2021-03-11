@@ -18,19 +18,24 @@ class LhcoRnDLoader(AbstractDataloader):
     """
     def __init__(self, file_paths: dict,
                  features: str,
-                 scaler:callable):
+                 scaler:callable = None,
+                 exclude: list = ['mjj'],
+                 exclude_range: list = [(None, None)]):
         """Creates an instance of 'LhcoRnDLoader'
 
         Args:
           file_paths: Dictionary of file path string values and their key 
             labels
-
           scaler: An instance of a scaler from 'scikit.preprocessing' module
           features: A key from the FEATURE_SETS dict
+          exclude: List of features to not be rescaled or introduced in the
+              training data. These features of the training data will be outputed
+              separately by the 'make_train_val' and 'make_test' methods   
         """
         self._file_paths = file_paths
         self._scaler = scaler
-        self.load_datasets(features)
+        self.exclude_range = exclude_range
+        self.load_datasets(features, exclude=exclude)
         self.train_indexes = {}
 
     @property
@@ -41,7 +46,7 @@ class LhcoRnDLoader(AbstractDataloader):
     def scaler(self, scaler):
         self._scaler = scaler
 
-    def load_datasets(self, features, exclude=['mjj']):
+    def load_datasets(self, features, exclude):
         """Loads the requested features from the datasets
 
         This is usually called by the constructor but cand later on be 
@@ -64,6 +69,14 @@ class LhcoRnDLoader(AbstractDataloader):
             in self._file_paths.items()
         }
 
+        # Cut based on excluded variables
+        for (key, df) in self._dataframes.items():
+            for col, rang in zip(exclude, self.exclude_range):
+                cmin, cmax = rang[0], rang[1]
+                low_out = df[col] < cmin if cmin else np.repeat(False, len(df.index))
+                high_out = df[col] > cmax if cmin else np.repeat(False, len(df.index))
+                out = df[low_out | high_out].index
+                self._dataframes[key] = df.drop(out, axis=0)
         # Drop excluded column and stored them separately
         self._excluded = {}
         for (key, df) in self._dataframes.items():
@@ -95,7 +108,8 @@ class LhcoRnDLoader(AbstractDataloader):
                 in self._dataframes.items()
             }
     
-    def make_train_val(self, sample_size, data_ratios: dict, val_split=0.):
+    def make_train_val(self, sample_size, data_ratios: dict, val_split=0,
+                       shuffle= False):
         """ Makes dataset of 'sample_size' using 'data_ratios'.
 
         Args:
@@ -114,6 +128,8 @@ class LhcoRnDLoader(AbstractDataloader):
         self.train_indexes = {
             key: np.random.choice(np.arange(self._scaled_data[key].shape[0]),
                                   size=count, replace=False)
+                 if shuffle else np.arange(self._scaled_data[key].shape[0]) \
+                                 [:count] 
             for (key, count) 
             in counts.items()
         }
@@ -151,7 +167,7 @@ class LhcoRnDLoader(AbstractDataloader):
             output[key+'_valid'] = y_test[:,i] if y_test is not None else None
         return output
 
-    def make_test(self, sample_size, data_ratios, replace=True):
+    def make_test(self, sample_size, data_ratios, replace=True, shuffle=False):
         """ Makes dataset of 'sample_size' using 'data_ratios'
 
         Args:
@@ -179,6 +195,7 @@ class LhcoRnDLoader(AbstractDataloader):
         # Create dictionary subsample data indexes
         self.test_indexes = {
             key: np.random.choice(f(key), size=count, replace=False)
+                 if shuffle else f(key)[:count] 
             for (key, count) 
             in counts.items()
         }
@@ -225,7 +242,10 @@ class LhcoRnDLoader(AbstractDataloader):
                 used_counts = self.train_indexes[key].shape[0] 
             else:
                 used_counts = 0
-            count = int(fraction*sample_size) 
+            if fraction == 'all':
+                count = self._scaled_data[key].shape[0] - used_counts
+            else:
+                count = int(fraction*sample_size) 
             # Check if theere is enough data avalilable
             if count + used_counts <= self._scaled_data[key].shape[0]:
                 events_counts[key] = count

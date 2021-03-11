@@ -23,22 +23,26 @@ if __name__ == '__main__':
     print("Using Tensorflow:",tf.__version__)
     scaler = QuantileTransformer(output_distribution='uniform')
     files = {
-        'bkg':'../data/MC_bkgHLF_merged.h5',
-        'bbox':'../data/BBOX2_bkgHLF_merged.h5',
+        'bkg':'../data/3jet/BBOXbkg/bkgHLF_merged.h5',
+        'bbox1_bkg':'../data/3jet/BBOX1/bkgHLF_merged.h5',
+        'bbox1_sig':'../data/3jet/BBOX1/sigHLF_merged.h5'
     }
 
     train_fractions = {
-        'bkg':1
+        'bkg':'all'
     }
 
     test_fractions = {
-        'bbox':1
+        'bbox1_sig':'all',
+        'bbox1_bkg':'all'
     }
     print("Loading data ...")
-    loader = LhcoRnDLoader(files, 'all', scaler)
+    loader = LhcoRnDLoader(files, 'all', scaler, exclude_range=[(2000,6000)])
     loader.preprocessing('bkg')
     train = loader.make_train_val(1_000_000, train_fractions, val_split=.2)
     test = loader.make_test(1_000_000, test_fractions, replace=False)
+
+    print("x_test:",test['x_test'].shape)
 
     print("Computing mjj density ...")
     GMM = GaussianMixture
@@ -48,16 +52,16 @@ if __name__ == '__main__':
     sample = gmm.sample(train["mjj_train"].shape[0])
     plt.hist(sample[0], bins=b, label='mjj GMM', alpha=.5, density=True)
     plt.legend()
-    plt.savefig("./plots/mjj_density.png")
-    plt.show(block=False)
+    plt.savefig("./figures/mjj_density.png")
+    plt.close()#plt.show(block=False)
 
     weights2 = gmm.score_samples(train["mjj_train"].reshape(-1, 1))
     weights2_valid = gmm.score_samples(train["mjj_valid"].reshape(-1, 1))
 
     plt.figure(figsize=(12,8))
     plt.scatter(train["mjj_train"], 1/np.exp(weights2))
-    plt.savefig("./plots/mjj_weights.png")
-    plt.show(block=False)  
+    plt.savefig("./figures/mjj_weights.png")
+    plt.close()#plt.show(block=False)  
 
     tfd = tfp.distributions
     tfb = tfp.bijectors
@@ -121,28 +125,34 @@ if __name__ == '__main__':
     from utils.plotting import loss_plot, latent_space_plot, mjj_cut_plot, \
                            sculpting_plot, roc_plot
 
-    loss_plot(pae.history, save_path="./plots/train.png")
+    loss_plot(pae.history, save_path="./figures/train.png")
     z_true = pae.ae.encode(train['x_train'])
     z_sample = pae.nf.sample(train['x_train'].shape[0])
 
-    latent_space_plot(z_true, z_sample, save_path='plots/latent_space.png')
+    latent_space_plot(z_true, z_sample, save_path='figures/latent_space.png')
 
     mse = pae.reco_error(train['x_train'])
     pae.compute_implicit_sigma(train['x_valid'])
     ascore = -pae.anomaly_score(train['x_train'])
 
-    mjj_cut_plot(mse, train['mjj_train'], prc=80, score_name='MSE', save_path='./plots/mse_cut_bkg.png')
-    mjj_cut_plot(ascore, train['mjj_train'], prc=80, score_name='NLL', save_path='./plots/nll_cut_bkg.png')
+    mjj_cut_plot(mse, train['mjj_train'], prc=80, score_name='MSE', save_path='./figures/mse_cut_bkg.png')
+    mjj_cut_plot(ascore, train['mjj_train'], prc=80, score_name='NLL', save_path='./figures/nll_cut_bkg.png')
 
     ano_scores = {
         'MSE': mse,
         'NLL': ascore
     }
 
-    sculpting_plot(ano_scores, train['mjj_train'], max_prc=99, save_path='./plots/mass_sculpting_bkg.png')
+    sculpting_plot(ano_scores, train['mjj_train'], max_prc=99, save_path='./figures/mass_sculpting_bkg.png')
 
     ascore_test = -pae.anomaly_score(test['x_test'])
-    bkg, data = mjj_cut_plot(ascore_test, test['mjj_test'], prc=99, score_name='NLL', bins=100, save_path='./plots/cut_bbox2_samescaler.png')
+    bkg, data = mjj_cut_plot(ascore_test, test['mjj_test'], prc=99, score_name='NLL', bins=100, save_path='./figures/cut_bbox1_samescaler.png')
+
+    #key =  np.fromfile("../data/events_LHCO2020_BlackBox1.masterkey", sep='\n').astype(int)
+    print("Ascore_test:",ascore_test.shape)
+    test['mjj_test'].tofile('figures/mjj_test.npy')
+    data.tofile('figures/data.npy')
+    ascore_test.tofile('figures/ascore_test.npy')
 
     import pyBumpHunter as BH
     
@@ -158,6 +168,6 @@ if __name__ == '__main__':
                         weights=weights
                     )
     hunter.BumpScan(data,bkg)
-    hunter.PlotBump(data,bkg,filename='./plots/bump_bbox2.png')
+    hunter.PlotBump(data,bkg,filename='./figures/bump_bbox1.png')
     hunter.PrintBumpTrue(data,bkg)
     
