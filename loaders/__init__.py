@@ -1,7 +1,12 @@
 """This module contains data loaders for LHCO datasets
 
-There are also constant lists defined for various feature sets, which are 
-merged toghether in a dictionary."""
+There are also constant lists defined for various feature sets and scalers, 
+which are merged toghether dictionaries."""
+
+from sklearn.preprocessing import QuantileTransformer, MinMaxScaler, \
+                                  StandardScaler, RobustScaler, Normalizer, \
+                                  MaxAbsScaler    
+
 
 CONTINUOUS_FEATURES = ['pt1', 'eta1', 'phi1', 'E1', 'm1', '1tau1', '2tau1', 
         '3tau1', '32tau1', '21tau1', 'pt2', 'eta2', 'phi2', 'E2', 'm2',
@@ -46,3 +51,13 @@ FEATURE_SETS = {
         'minimal': MINIMAL_FEATURES,
         'trijet': TRIJET_ALL
     }
+
+SCALERS = {
+        'min_max': MinMaxScaler,
+        'standard': StandardScaler,
+        'quantile': QuantileTransformer,
+        'robust': RobustScaler,
+        'normalizer': Normalizer,
+        'max_abs': MaxAbsScaler
+        }
+

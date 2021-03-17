@@ -20,7 +20,11 @@ ALL_FEATURES = ['pt1', 'eta1', 'phi1', 'E1', 'm1', 'nc1', 'nisj1', 'nesj1',
 MINMAL_FEATURES = ['pt1', 'eta1', 'E1', 'm1', '21tau1', '32tau1', 
         'pt2', 'eta2', 'E2', 'm2', '21tau2', '32tau2']
 
-def from_json(path):
+def load_json(path):
     with open(path) as json_file:
         cfg = json.load(json_file)
     return cfg
+
+def dump_json(dct, path):
+    with open(path, "w") as json_file:
+        json.dump(dct, json_file, indent=4)

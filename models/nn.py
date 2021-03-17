@@ -1,5 +1,8 @@
 import numpy as np
 
+from utils import load_json
+from models import OPTIMIZERS, ACTIVATIONS, REGULARIZERS, MODELS, CALLBACKS
+
 class Pae():
     """Probabilistic Autoencoder network architecture
     
@@ -102,6 +105,10 @@ class PaeBuilder():
         self._optim_nf = 'Adam'
         self._compiled_ae = False
         self._compiled_nf = False
+
+    @classmethod
+    def from_json(cls, json_file):
+        config = load_json(json_file)
 
     @property
     def pae(self):

@@ -1,11 +1,14 @@
 """Concrete implementations of DataLoaders"""
 
+import json
+
 import pandas as pd
 import numpy as np
 
 from sklearn.model_selection import train_test_split
 
-from loaders import FEATURE_SETS
+from utils import load_json
+from loaders import FEATURE_SETS, SCALERS
 from loaders.base import AbstractDataloader
 
 
@@ -37,6 +40,16 @@ class LhcoRnDLoader(AbstractDataloader):
         self.exclude_range = exclude_range
         self.load_datasets(features, exclude=exclude)
         self.train_indexes = {}
+    
+    @classmethod
+    def from_json(cls, json_file):
+        """Creates an instance of 'LhcoRnDLoader' based on a json file"""
+        kwargs = load_json(json_file)
+        scaler = kwargs['scaler']
+        if scaler is not None:
+            kwargs['scaler'] = SCALERS[scaler](**kwargs['scaler_kwargs'])
+        del kwargs["scaler_kwargs"]
+        return cls(**kwargs)
 
     @property
     def scaler(self):
@@ -108,7 +121,7 @@ class LhcoRnDLoader(AbstractDataloader):
                 in self._dataframes.items()
             }
     
-    def make_train_val(self, sample_size, data_ratios: dict, val_split=0,
+    def make_train_val(self, data_ratios: dict, sample_size=None, val_split=0,
                        shuffle= False):
         """ Makes dataset of 'sample_size' using 'data_ratios'.
 
@@ -118,7 +131,8 @@ class LhcoRnDLoader(AbstractDataloader):
             val_split: Real value in (0,1) representing the fraction of 
               validation data
             data_ratios: Dictionary of dataset label keys and fraction values. 
-              The values should add up to 1 and the keys should point to 
+              The values should add up to 1 if they are floats otherwise they
+              will be interpreded as event counts. The keys should point to 
               loaded datasets.
         """
         # Check if 'data_ratios' is valid
@@ -167,7 +181,7 @@ class LhcoRnDLoader(AbstractDataloader):
             output[key+'_valid'] = y_test[:,i] if y_test is not None else None
         return output
 
-    def make_test(self, sample_size, data_ratios, replace=True, shuffle=False):
+    def make_test(self, data_ratios, sample_size=None, replace=True, shuffle=False):
         """ Makes dataset of 'sample_size' using 'data_ratios'
 
         Args:
@@ -229,6 +243,32 @@ class LhcoRnDLoader(AbstractDataloader):
 
         return output
 
+    def make_full_dataset(self, train_ratios, test_ratios, fit_key=None, 
+                     train_size=None, test_size=None, val_split=0, 
+                     shuffle=False, replace=False):
+        """Runs the entire data preprocessing chain.
+        
+        First rescales all data training the scaler on the set given by 
+        'fit key', then creates the train and test datasets using the methods 
+        'make_train_val' and 'make_test', and lastly merges everything into a
+        single dictionary that gets returned.
+        """
+        # Train scaler and fit all data loaded
+        self.preprocessing(fit_key)
+
+        # Create training dataset
+        train = self.make_train_val(train_ratios, sample_size=train_size,
+                                    val_split=val_split, shuffle=shuffle)
+
+        # Create test dataset
+        test = self.make_test(test_ratios, sample_size=test_size,
+                                shuffle=shuffle, replace=replace)
+
+        # Merge train and test dictonaries and return the output
+        dataset = {**train, **test}
+        del train, test
+        return dataset
+
     def _check_data_ratios(self, sample_size, 
                            data_ratios: dict, 
                            test_replace = False):
@@ -244,8 +284,14 @@ class LhcoRnDLoader(AbstractDataloader):
                 used_counts = 0
             if fraction == 'all':
                 count = self._scaled_data[key].shape[0] - used_counts
-            else:
-                count = int(fraction*sample_size) 
+            elif fraction <=1:
+                if sample_size:
+                    count = int(fraction*sample_size)
+                else:
+                    ValueError(f"Total sample size should be given when " +
+                                "using relative data ratios")
+            elif fraction >1:
+                count = fraction
             # Check if theere is enough data avalilable
             if count + used_counts <= self._scaled_data[key].shape[0]:
                 events_counts[key] = count
