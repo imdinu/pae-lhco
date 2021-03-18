@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod, abstractproperty
 class AbstractDataloader(ABC):
     """Abstract base class of a dataloader.
 
-    Any data LoaderMust implement the 'scaler' attribute, which is usually
+    Any data Loader Must implement the 'scaler' attribute, which is usually
     choosen from 'sklearn.preprocessing'. 
 
     The three methods of this class that require to be implemented  

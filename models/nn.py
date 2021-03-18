@@ -39,30 +39,42 @@ class Pae():
 
     def compute_implicit_sigma(self, x_val):
         """Calculates the sigma parameter on the given data and stores it"""
+
         self.sigma_square = self.reco_error(x_val, axis = 0)
 
     def reco_error(self, x_true, axis=1):
         """Returs the autoencoder reconstruction error of the input data"""
+
         x_reco = self._ae(x_true)
         return np.mean(np.square(x_true-x_reco), axis=axis)
 
-    def log_prob_encoding(self, x):
+    def log_prob_encoding(self, x, c=None):
         """Return the log likelihood of a given encoding"""
+        
         z = self._ae.encode(x)
-        return self._nf(z)
+        if c is not None:
+            return self._nf([z, c]).numpy()
+        else:
+            return self._nf(z).numpy()
 
-    def anomaly_score(self, x):
+    def anomaly_score(self, x, c=None):
         """Calculates the anomaly scores for the input data"""
+
         reco_error = np.square(self._ae(x)-x)
         z = self._ae.encode(x)
-        byz = self._nf.inverse(z)
-        detJ = self._nf.inverse_log_det_jacobian(z)
+        if c is not None:
+            byz = self._nf.inverse([z, c])
+            detJ = self._nf.inverse_log_det_jacobian([z, c])
+        else:
+            byz = self._nf.inverse(z)
+            detJ = self._nf.inverse_log_det_jacobian(z)
 
         return -0.5*np.dot(reco_error,self.sigma_square**(-1)) - \
                 0.5*np.linalg.norm(byz,axis=1)**2 + detJ
 
-    def fit(self, x, kwargs_ae, kwargs_nf):
+    def fit(self, x, c=None, kwargs_ae=None, kwargs_nf=None):
         """Trains the autoencoder and then the flow model"""
+        
         # Autoencoder training
         self.history['ae'] = self._ae.fit(x=x, 
                                       y=x,  
@@ -70,14 +82,25 @@ class Pae():
 
         # Encode training and validation data
         z = self.ae.encode(x)
-        if 'validation_data' in kwargs_nf.keys():
-            x_valid, y_valid = kwargs_nf['validation_data']
-            kwargs_nf['validation_data'] = (self.ae.encode(x_valid), self.ae.encode(y_valid))
-        
-        #Train Normalizing Flow
-        self.history['nf']= self._nf.fit(x=z,
-                                         y=np.zeros(z.shape),
-                                         **kwargs_nf)
+
+        if c is not None:
+            if 'validation_data' in kwargs_nf.keys():
+                x_valid, c_valid = kwargs_nf['validation_data']
+                kwargs_nf['validation_data'] = ([self.ae.encode(x_valid), c_valid], np.zeros(c_valid.shape[0]))
+            
+            #Train Normalizing Flow
+            self.history['nf']= self._nf.fit(x=[z, c],
+                                            y=np.zeros(z.shape),
+                                            **kwargs_nf)
+        else:
+            if 'validation_data' in kwargs_nf.keys():
+                x_valid, _ = kwargs_nf['validation_data']
+                kwargs_nf['validation_data'] = (self.ae.encode(x_valid), np.zeros(x_valid.shape[0]))
+            
+            #Train Normalizing Flow
+            self.history['nf']= self._nf.fit(x=[z, c],
+                                            y=np.zeros(z.shape),
+                                            **kwargs_nf)
         self.is_fit = True
 
 
