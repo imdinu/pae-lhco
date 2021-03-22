@@ -11,7 +11,7 @@ from scipy.interpolate import interp1d
 class GMM(AbstractDensityEstimator):
     """Wrapper around scikit GaussianMixture"""
     
-    def __init__(self, n_components, covariance_type='full'):
+    def __init__(self, n_components=200, covariance_type='full'):
         self._estimator = GaussianMixture(n_components, covariance_type)
 
     @property

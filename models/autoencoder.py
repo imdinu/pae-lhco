@@ -148,7 +148,7 @@ class DenseAutoencoder(Autoencoder):
     def __init__(self, 
                  input_dim, 
                  encoding_dim, 
-                 units_list=[],
+                 units=[],
                  hidden_activation=tf.nn.relu,
                  output_activation=tf.nn.sigmoid,
                  bias_reg=None,
@@ -161,7 +161,7 @@ class DenseAutoencoder(Autoencoder):
         Args:
           input_dim: The number of nodes for the autoencoder input and output
           encoding_dim: The number of nodes in the encoder output.
-          unitsl_list: List of integers. This list is passed to the 
+          units: List of integers. This list is passed to the 
             'DenseEncoder' constructor. The same list but reversed is passed
             to the 'DenseDecoder' constructor
           hidden_activation: The activation funtion used for all the layers 
@@ -177,11 +177,11 @@ class DenseAutoencoder(Autoencoder):
             constructor
         """ 
         super(DenseAutoencoder, self).__init__(name=name, dtype=dtype)
-        self.encoder = DenseEncoder(encoding_dim, units_list, 
+        self.encoder = DenseEncoder(encoding_dim, units, 
                                hidden_activation, output_activation,
                                bias_reg=bias_reg, weight_reg=weight_reg,
                                dtype=dtype)
-        self.decoder = DenseDecoder(input_dim, units_list[::-1], 
+        self.decoder = DenseDecoder(input_dim, units[::-1], 
                                hidden_activation, output_activation,
                                bias_reg=bias_reg, weight_reg=weight_reg,
                                dtype=dtype)

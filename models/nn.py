@@ -17,8 +17,8 @@ class Pae():
         """Creates a PAE given an Autoencoder and a Flow model"""
         self.history = {}
         self.is_fit = False
-        self._ae = ae
-        self._nf = nf
+        self.ae = ae
+        self.nf = nf
         self.sigma_square = None
 
     @property
@@ -83,6 +83,7 @@ class Pae():
         # Encode training and validation data
         z = self.ae.encode(x)
 
+        # Check if there are conditional inputs
         if c is not None:
             if 'validation_data' in kwargs_nf.keys():
                 x_valid, c_valid = kwargs_nf['validation_data']
@@ -98,7 +99,7 @@ class Pae():
                 kwargs_nf['validation_data'] = (self.ae.encode(x_valid), np.zeros(x_valid.shape[0]))
             
             #Train Normalizing Flow
-            self.history['nf']= self._nf.fit(x=[z, c],
+            self.history['nf']= self._nf.fit(x=z,
                                             y=np.zeros(z.shape),
                                             **kwargs_nf)
         self.is_fit = True
@@ -131,7 +132,48 @@ class PaeBuilder():
 
     @classmethod
     def from_json(cls, json_file):
-        config = load_json(json_file)
+        """Creates a Pae object from a configuration file"""
+        pae_config = load_json(json_file)
+        
+        ae_config = {key.split(':')[1]:pae_config.pop(key) 
+            for key in list(pae_config.keys()) 
+            if 'AE:' in key}
+        nf_config = {key.split(':')[1]:pae_config.pop(key) 
+                    for key in list(pae_config.keys()) 
+                    if 'NF:' in key}
+        
+        builder = cls()
+
+        builder._interpret_args(pae_config)
+        builder._interpret_config(ae_config)
+        builder._interpret_config(nf_config)
+
+        ae_model = pae_config.pop('ae_model')
+        ae_optim = pae_config.pop('ae_optimizer')
+
+        nf_model = pae_config.pop('nf_model')
+        nf_optim = pae_config.pop('nf_optimizer')
+
+        ae_train = {key.split('_', 1)[1]:pae_config.pop(key) 
+                    for key in list(pae_config.keys()) 
+                    if 'ae' in key}
+        nf_train = {key.split('_', 1)[1]:pae_config.pop(key) 
+                    for key in list(pae_config.keys()) 
+                    if 'nf' in key}
+        if pae_config:
+            raise Warning("Json config contains unusable kwargs", 
+                          pae_config.keys())
+        print(ae_config, nf_config)
+
+        builder.make_ae_model(ae_model, ae_config)
+        builder.make_nf_model(nf_model, nf_config)
+        builder.optimizer_ae = ae_optim
+        builder.optimizer_nf = nf_optim
+        builder.compile_ae()
+        builder.compile_nf()
+
+        return builder.pae, ae_train, nf_train
+
 
     @property
     def pae(self):
@@ -145,6 +187,22 @@ class PaeBuilder():
         pae = Pae(self._ae, self._nf)
         self.reset()
         return pae
+
+    @property
+    def optimizer_ae(self):
+        return self._optim_ae
+    
+    @optimizer_ae.setter
+    def optimizer_ae(self, optimizer_ae):
+        self._optim_ae = optimizer_ae
+
+    @property
+    def optimizer_nf(self):
+        return self._optim_nf
+    
+    @optimizer_nf.setter
+    def optimizer_nf(self, optimizer_nf):
+        self._optim_nf = optimizer_nf
 
     def make_ae_model(self, cls, kwargs_dict):
         """Creates Autoencoder based on 'kwargs_dict'"""
@@ -181,3 +239,39 @@ class PaeBuilder():
                                'builder.make_nf_model(cls, kwargs_dict)')
         self._nf.compile(self._optim_nf, loss)
         self._compiled_nf = True
+
+    def _interpret_args(self, config):
+        """Translates strings to objects passing kwargs constructiors"""
+        for key in list(config):
+            if 'model' in key:
+                config[key] = MODELS[config[key]]
+            elif 'optimizer' in key:
+                if key+'_kwargs' in config:
+                    config[key] = OPTIMIZERS[config[key]](**config.pop(
+                                                            key+"_kwargs")
+                                                        )
+                elif 'kwargs' not in key:
+                    config[key] = OPTIMIZERS[config[key]]()
+            elif 'callbacks' in key and 'kwargs' not in key:
+                if key+'_kwargs' in config:
+                    config[key] = [CALLBACKS[callback](**kwargs)
+                                    for callback, kwargs  
+                                    in zip(config[key],config.pop(
+                                                            key+"_kwargs")
+                                                        )
+                                    ]
+                else:
+                    config[key] = [CALLBACKS[callback]()
+                                    for callback in config[key]
+                                    ] 
+    def _interpret_config(self, config):
+        for key in config:
+            if 'activation' in key:
+                config[key]= ACTIVATIONS[config[key]]
+            if 'reg' in key:
+                if len(config[key]) == 2 :
+                    config[key]= REGULARIZERS['l1_l2'](**config[key])
+                elif len(config[key]) == 1:
+                    config[key]= REGULARIZERS[list(config[key])[0]](**config[key])
+                else:
+                    config[key]=None
