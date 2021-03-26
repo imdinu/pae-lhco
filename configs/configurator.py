@@ -20,6 +20,10 @@ def unravel_recipe(d):
     for values in product(*values):
         yield {**d, **dict(zip(keys, values))}
 
+class hashabledict(dict):
+    def __hash__(self):
+        return hash(tuple(sorted(self.items())))
+
 if __name__ == "__main__":
     
     # Read and parse arguments
@@ -41,13 +45,18 @@ if __name__ == "__main__":
 
     # Get all of the configurations acording to the recipe
     configs = unravel_recipe(recipe)
-
+    
     for cfg in configs:
-        # Frozen representation of dict items
-        frozen_cfg = frozenset(cfg.items())
+        for key in cfg.keys():
+            if isinstance(cfg[key], dict):
+                cfg[key] = hashabledict(cfg[key])
+            if isinstance(cfg[key], list):
+                cfg[key] = tuple(cfg[key])
+        #frozen_cfg = frozenset(cfg.items())
+        print(hashabledict(cfg))
 
         # Hash cut to 16bit and converted to hex
-        id = np.uint16(hash(frozen_cfg))
+        id = np.uint16(hash(hashabledict(cfg)))
         fname = f"{id:04x}.json"
 
         # Save config dict using hex hash as filename
