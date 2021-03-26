@@ -228,8 +228,12 @@ class HLFAnalysis(AbstractAnalysis):
     def plot_latent_space(self, filename=None):
 
         z_true = self.pae.ae.encode(self.dataset['x_train'])
-        c = self.c_inputs['train'] if self.c_inputs else None
-        z_sample = self.pae.nf.sample(c, self.dataset['x_train'].shape[0])
+
+        if self.c_inputs is not None:
+            c = self.c_inputs['train'] 
+            z_sample = self.pae.nf.sample(c, self.dataset['x_train'].shape[0])
+        else:
+             z_sample = self.pae.nf.sample(self.dataset['x_train'].shape[0])
 
         fig = latent_space_plot(z_true, z_sample)
         if filename:

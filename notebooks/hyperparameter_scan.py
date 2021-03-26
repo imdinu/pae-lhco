@@ -51,11 +51,12 @@ if __name__ == "__main__":
     }
 
     for file in config_files:
+        print(f"Using configuration {file} ...")
         analysis_cfg = load_json(file)
         analysis_cfg
 
+        analysis_cfg["NF:n_dims"] = analysis_cfg["AE:encoding_dim"]
         config = analysis_cfg.copy()
-        config["NF:n_dims"] = config["AE:encoding_dim"]
 
         loader_json = analysis_cfg.pop('ANA:loader')
         dataset_json = analysis_cfg.pop('ANA:dataset')
