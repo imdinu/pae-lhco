@@ -151,7 +151,7 @@ class HLFAnalysis(AbstractAnalysis):
             if 'x_valid' in self.dataset.keys():
                 nf_train['validation_data'] = [self.dataset["x_valid"], None]
         
-        self.history = self.pae.fit(self.dataset["x_train"], c, 
+        self.pae.fit(self.dataset["x_train"], c, 
                                     ae_train, nf_train)
         
         if 'x_valid' in self.dataset.keys():
@@ -219,7 +219,7 @@ class HLFAnalysis(AbstractAnalysis):
 
     def plot_training(self, filename=None):
 
-        fig = loss_plot(self.history)
+        fig = loss_plot(self.pae.history)
         if filename:
             fig.write_image(filename)
         else:
@@ -228,7 +228,8 @@ class HLFAnalysis(AbstractAnalysis):
     def plot_latent_space(self, filename=None):
 
         z_true = self.pae.ae.encode(self.dataset['x_train'])
-        z_sample = self.pae.nf.sample(self.dataset['x_train'].shape[0])
+        c = self.c_inputs['train'] if self.c_inputs else None
+        z_sample = self.pae.nf.sample(c, self.dataset['x_train'].shape[0])
 
         fig = latent_space_plot(z_true, z_sample)
         if filename:

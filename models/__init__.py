@@ -7,7 +7,7 @@ import tensorflow.keras.regularizers as tfkr
 import tensorflow.keras.callbacks as tfc
 
 from models.autoencoder import DenseAutoencoder
-from models.flows import MAF
+from models.flows import MAF, CondMAF
 
 OPTIMIZERS = {
     'adadelta': tfko.Adadelta,
@@ -49,7 +49,8 @@ REGULARIZERS = {
 
 MODELS = {
     'dense_ae': DenseAutoencoder,
-    'maf': MAF
+    'maf': MAF,
+    'cond_maf': CondMAF
     }
 
 CALLBACKS = {

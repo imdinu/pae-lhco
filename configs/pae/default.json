@@ -26,7 +26,7 @@
     "ae_optimizer": "adam",
     "nf_optimizer": "adam",
     "ae_optimizer_kwargs": {
-        "lr": 0.05
+        "lr": 0.001
     },
     "nf_optimizer_kwargs": {
         "lr": 0.005

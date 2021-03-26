@@ -52,7 +52,8 @@ class MAF(Flow):
                  activation=tf.nn.tanh,
                  bias_reg=None,
                  weight_reg=None,
-                 dtype='float32'):
+                 dtype='float32',
+                 **kwargs):
         """Creates a MAF object.
 
         Args:
@@ -71,7 +72,8 @@ class MAF(Flow):
                             input_order=self._input_order(i, n_layers),
                             activation=activation,
                             kernel_regularizer=weight_reg,
-                            bias_regularizer=bias_reg)
+                            bias_regularizer=bias_reg,
+                            **kwargs)
                      for i 
                      in range(n_layers)]
 
@@ -128,11 +130,13 @@ class CondMAF(Flow):
     Based a chain of trainable 'Bijector' objects from the 
     'tensorflow-probability' module
     """
-    def __init__(self, n_dims, n_layers, units, name=None, 
+    def __init__(self, n_dims, n_layers, units, name=None,
+                 conditional_event_shape=(1,),
                  activation=tf.nn.tanh,
                  bias_reg=None,
                  weight_reg=None, 
-                 dtype='float32'):
+                 dtype='float32',
+                 **kwargs):
         """Creates a CondMAF object.
 
         Args:
@@ -152,9 +156,10 @@ class CondMAF(Flow):
                             activation=activation,
                             event_shape=(n_dims,),
                             conditional=True,
-                            conditional_event_shape=(1,),
+                            conditional_event_shape=conditional_event_shape,
                             kernel_regularizer=weight_reg,
-                            bias_regularizer=bias_reg)
+                            bias_regularizer=bias_reg,
+                            **kwargs)
                      for i 
                      in range(n_layers)]
 

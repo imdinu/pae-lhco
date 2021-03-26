@@ -133,7 +133,10 @@ class PaeBuilder():
     @classmethod
     def from_json(cls, json_file):
         """Creates a Pae object from a configuration file"""
-        pae_config = load_json(json_file)
+        if isinstance(json_file, dict):
+            pae_config = json_file
+        else:
+            pae_config = load_json(json_file)
         
         ae_config = {key.split(':')[1]:pae_config.pop(key) 
             for key in list(pae_config.keys()) 
@@ -163,7 +166,6 @@ class PaeBuilder():
         if pae_config:
             raise Warning("Json config contains unusable kwargs", 
                           pae_config.keys())
-        print(ae_config, nf_config)
 
         builder.make_ae_model(ae_model, ae_config)
         builder.make_nf_model(nf_model, nf_config)
