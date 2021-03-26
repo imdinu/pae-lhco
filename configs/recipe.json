@@ -37,26 +37,26 @@
     "nf_optimizer_kwargs": {
         "lr": 0.005
     },
-    "ae_callbacks": [
+    "ae_callbacks": [[
         "reduce_lr_on_plateau"
-    ],
-    "ae_callbacks_kwargs": [
+    ]],
+    "ae_callbacks_kwargs": [[
         {
             "factor": 0.2,
             "patience": 10,
             "verbose": 1
         }
-    ],
-    "nf_callbacks": [
+    ]],
+    "nf_callbacks": [[
         "reduce_lr_on_plateau"
-    ],
-    "nf_callbacks_kwargs": [
+    ]],
+    "nf_callbacks_kwargs": [[
         {
             "factor": 0.2,
             "patience": 5,
             "verbose": 1
         }
-    ],
+    ]],
     "ae_epochs": 120,
     "ae_batch_size": 200,
     "nf_epochs": 80,

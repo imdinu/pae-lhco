@@ -55,6 +55,7 @@ if __name__ == "__main__":
         analysis_cfg
 
         config = analysis_cfg.copy()
+        config["NF:n_dims"] = config["AE:encoding_dim"]
 
         loader_json = analysis_cfg.pop('ANA:loader')
         dataset_json = analysis_cfg.pop('ANA:dataset')

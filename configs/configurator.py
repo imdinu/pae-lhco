@@ -51,9 +51,11 @@ if __name__ == "__main__":
             if isinstance(cfg[key], dict):
                 cfg[key] = hashabledict(cfg[key])
             if isinstance(cfg[key], list):
+                if isinstance(cfg[key][0], list):
+                    cfg[key] = [tuple(ele) for ele in cfg[key]]
+                if isinstance(cfg[key][0], dict):
+                    cfg[key] = [hashabledict(ele) for ele in cfg[key]]
                 cfg[key] = tuple(cfg[key])
-        #frozen_cfg = frozenset(cfg.items())
-        print(hashabledict(cfg))
 
         # Hash cut to 16bit and converted to hex
         id = np.uint16(hash(hashabledict(cfg)))

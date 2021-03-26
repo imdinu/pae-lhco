@@ -245,6 +245,7 @@ class PaeBuilder():
     def _interpret_args(self, config):
         """Translates strings to objects passing kwargs constructiors"""
         for key in list(config):
+            print(key)
             if 'model' in key:
                 config[key] = MODELS[config[key]]
             elif 'optimizer' in key:
