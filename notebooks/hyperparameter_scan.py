@@ -71,7 +71,8 @@ if __name__ == "__main__":
 
         pae, ae_train, nf_train = builder.from_json(analysis_cfg)
         task = HLFAnalysis(pae, dataset=dataset)
-        task.reweighting(estimator=density_estimator, fit_key='mjj_train')
+        task.reweighting(estimator=density_estimator, fit_key='mjj_train',
+			 range=(1000,9500))
         if 'cond' in config['nf_model']:
             task.make_cond_inputs(['mjj_train', 'mjj_test', 'mjj_valid'])
         task.train(ae_train,nf_train)
@@ -82,8 +83,8 @@ if __name__ == "__main__":
         id = config_files[0].replace('.', '/').split('/')[-2]
         results_history['id'].append(id)
         results_history['config'].append(config)
-        task.plot_training(plots_dir+id+'_train.png')
-        task.plot_latent_space(plots_dir+id+'_latent.png')
+        #task.plot_training(plots_dir+id+'_train.svg')
+        #task.plot_latent_space(plots_dir+id+'_latent.svg')
 
     dump_json(results_history, plots_dir+'restult.json')
 

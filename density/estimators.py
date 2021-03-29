@@ -22,7 +22,7 @@ class GMM(AbstractDensityEstimator):
     def estimator(self, estimator):
         self._estimator = estimator
 
-    def fit(self, data):
+    def fit(self, data, range=None):
         self._estimator.fit(data.reshape(-1,1))
 
     def evaluate(self, data):

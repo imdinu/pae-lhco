@@ -79,18 +79,19 @@ class HLFAnalysis(AbstractAnalysis):
         
         self.dataset = self.loader.make_full_dataset(**kwargs)
 
-    def reweighting(self, estimator=None, fit_key=None):
+    def reweighting(self, estimator=None, fit_key=None, range=None):
         """Computes event weights based on mjj.
 
         Args:
             estimator: Instance of density estimator or string.
             fit_key: Dict key pointing to the dataset to be used for estimator 
                      training.
+            range: Tuple containing the range of values (used for interpolation)
         """
         if estimator:
             self.estimator = estimator
         if fit_key:
-            self.estimator.fit(self.dataset[fit_key])
+            self.estimator.fit(self.dataset[fit_key], range=range)
 
         mjj_keys = ['mjj_train', 'mjj_test', 'mjj_valid']
         eval_keys = [key for key in mjj_keys if key in self.dataset.keys()]

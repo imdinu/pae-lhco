@@ -60,5 +60,7 @@
     "ae_epochs": 120,
     "ae_batch_size": 200,
     "nf_epochs": 80,
-    "nf_batch_size": 200
+    "nf_batch_size": 200,
+    "ae_verbose": 0,
+    "nf_verbose": 0
 }
