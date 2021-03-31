@@ -2,6 +2,9 @@
 
 from abc import ABC, abstractmethod, abstractproperty
 
+from utils import load_json
+from loaders import FEATURE_SETS, SCALERS
+
 class AbstractDataloader(ABC):
     """Abstract base class of a dataloader.
 
@@ -27,4 +30,14 @@ class AbstractDataloader(ABC):
     @abstractmethod
     def make_test(self):
         pass
+
+    @classmethod
+    def from_json(cls, json_file):
+        """Creates an instance of 'LhcoRnDLoader' based on a json file"""
+        kwargs = load_json(json_file)
+        scaler = kwargs['scaler']
+        if scaler is not None:
+            kwargs['scaler'] = SCALERS[scaler](**kwargs['scaler_kwargs'])
+        del kwargs["scaler_kwargs"]
+        return cls(**kwargs)
     

@@ -1,6 +1,9 @@
+# %%
+import os
+
+import h5py
 import matplotlib.pyplot as plt
 import numpy as np
-import os
 import tensorflow as tf
 
 from tensorflow import keras
@@ -9,22 +12,23 @@ from tensorflow.keras.models import Sequential
 
 from sklearn.model_selection import train_test_split
 
-hfb = h5py.File('../clustering/lhc-olympics-preprocessing/images64_16_rn066/bkg_imgs.h5', 'r')
-hfs = h5py.File('../clustering/lhc-olympics-preprocessing/images64_16_rn066/sig_imgs.h5', 'r')
+hfb = h5py.File('../data/images64_8_rsn066/bkg_imgs.h5', 'r')
+hfs = h5py.File('../data/images64_8_rsn066/sig_imgs.h5', 'r')
 sig = hfs.get('multijet').value 
 bkg = hfb.get('multijet').value 
 
 n_sig = sig.shape[0]
 
 x = np.concatenate([sig, bkg[:n_sig]])
-y = np.concatenate(np.ones(n_sig), np.zeros[n_sig])
+y = np.concatenate([np.ones(n_sig), np.zeros(n_sig)])
 
-X_train, X_test, y_train, y_test 
+X_train, X_test, y_train, y_test \
     = train_test_split(x, y, test_size=0.33, random_state=1)
 
-X_train, X_valid, y_train, y_valid 
+X_train, X_valid, y_train, y_valid  \
     = train_test_split(x, y, test_size=0.2, random_state=1)
 
+# %%
 batch_size = 32
 img_height = 64
 img_width = 64
@@ -32,7 +36,7 @@ img_width = 64
 num_classes = 2
 
 model = Sequential([
-  layers.InputLayer(input_shape=(img_height, img_width, 3)),
+  layers.InputLayer(input_shape=(img_height, img_width, 1)),
   layers.Conv2D(16, 3, padding='same', activation='relu'),
   layers.MaxPooling2D(),
   layers.Conv2D(32, 3, padding='same', activation='relu'),
@@ -48,14 +52,15 @@ model.compile(optimizer='adam',
               loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
               metrics=['accuracy'])
 
-epochs=30
+epochs=10
 history = model.fit(
-  x=x_train, y=y_train,
-  validation_data=(x_valid, y_valid),
+  x=X_train, y=y_train,
+  validation_data=(X_valid, y_valid),
   epochs=epochs,
   batch_size=batch_size
 )
 
+# %%
 acc = history.history['accuracy']
 val_acc = history.history['val_accuracy']
 
@@ -79,6 +84,7 @@ plt.title('Training and Validation Loss')
 plt.savefig('acc.png')
 plt.close()
 
+# %%
 y_score = model.predict(X_train)
 
 # Compute ROC curve and ROC area for each class
