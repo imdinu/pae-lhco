@@ -3,10 +3,14 @@ import sys
 import glob
 import argparse
 
+from tqdm import tqdm
 import tensorflow as tf
 import numpy as np
 
 sys.path.append("../")
+
+import plotly.io as pio
+pio.orca.config.use_xvfb = True
 
 from loaders.LHCO import LhcoRnDLoader
 from analysis.scalar import HLFAnalysis
@@ -50,7 +54,7 @@ if __name__ == "__main__":
         'auc': []
     }
 
-    for file in config_files:
+    for file in tqdm(config_files):
         print(f"Using configuration {file} ...")
         analysis_cfg = load_json(file)
         analysis_cfg
@@ -80,11 +84,11 @@ if __name__ == "__main__":
         for key in result.keys():
             results_history[key].append(result[key])
         
-        id = config_files[0].replace('.', '/').split('/')[-2]
+        id = file.replace('.', '/').split('/')[-2]
         results_history['id'].append(id)
         results_history['config'].append(config)
-        #task.plot_training(plots_dir+id+'_train.svg')
-        #task.plot_latent_space(plots_dir+id+'_latent.svg')
+        task.plot_training(plots_dir+id+'_train.svg')
+        task.plot_latent_space(plots_dir+id+'_latent.svg')
 
     dump_json(results_history, plots_dir+'restult.json')
 
