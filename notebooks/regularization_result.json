@@ -1,0 +1,2288 @@
+{
+    "id": [
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace",
+        "7ace"
+    ],
+    "config": [
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 5,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 5,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 5,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 5,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 5,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 5,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 5,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 5,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 6,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 6,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 6,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 6,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 6,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 6,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 6,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 6,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 7,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 7,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 7,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 7,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 7,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 7,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 7,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 7,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 8,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 8,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 8,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 8,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 8,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 8,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 8,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 8,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 9,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 9,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 9,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 9,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 9,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 9,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 9,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 9,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 10,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 10,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 10,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 10,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 10,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 10,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 10,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 10,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 11,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 11,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 11,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 11,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 11,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 11,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 11,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 11,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 12,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 12,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 12,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 12,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 12,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-05,
+                "l2": 1e-06
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 12,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        },
+        {
+            "ANA:loader": "../configs/loader/default_rnd.json",
+            "ANA:dataset": "../configs/loader/default_dataset.json",
+            "ANA:estimator": "gmm",
+            "ANA:percentile": 95,
+            "ae_model": "dense_ae",
+            "nf_model": "maf",
+            "AE:input_dim": 47,
+            "AE:encoding_dim": 12,
+            "AE:units": [
+                30,
+                20,
+                15
+            ],
+            "AE:hidden_activation": "relu",
+            "AE:output_activation": "sigmoid",
+            "AE:weight_reg": {
+                "l1": 1e-06,
+                "l2": 1e-05
+            },
+            "AE:bias_reg": {},
+            "AE:output_reg": {},
+            "NF:n_dims": 12,
+            "NF:n_layers": 5,
+            "NF:units": [
+                32,
+                32,
+                32,
+                32
+            ],
+            "ae_optimizer": "adam",
+            "nf_optimizer": "adam",
+            "ae_optimizer_kwargs": {
+                "lr": 0.001
+            },
+            "nf_optimizer_kwargs": {
+                "lr": 0.005
+            },
+            "ae_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "ae_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 10,
+                    "verbose": 1
+                }
+            ],
+            "nf_callbacks": [
+                "reduce_lr_on_plateau"
+            ],
+            "nf_callbacks_kwargs": [
+                {
+                    "factor": 0.2,
+                    "patience": 5,
+                    "verbose": 1
+                }
+            ],
+            "ae_epochs": 120,
+            "ae_batch_size": 200,
+            "nf_epochs": 80,
+            "nf_batch_size": 200,
+            "ae_verbose": 0,
+            "nf_verbose": 0
+        }
+    ],
+    "js_div_train": [
+        0.031254850686203615,
+        0.03916347092644198,
+        0.05691182991443826,
+        0.03617968000164169,
+        0.09999287262801952,
+        0.033537009333243925,
+        0.025610279136877405,
+        0.03645635088345848,
+        0.03918890353930624,
+        0.029040633437244806,
+        0.027889419635711815,
+        0.030382041089481025,
+        0.04582119720434522,
+        0.057498650076736,
+        0.05745487745056764,
+        0.10598643907045235,
+        0.040087906020228686,
+        0.0317919229703798,
+        0.05154777614080017,
+        0.031475036765397424,
+        0.03834689290711252,
+        0.05391374506381847,
+        0.03192828171936524,
+        0.030454764394913528,
+        0.05433469324804139,
+        0.03245845963786931,
+        0.0385313879481151,
+        0.046166333763487964,
+        0.033574703855592254,
+        0.09149620978095703,
+        0.035810971713919705,
+        0.05109566395156295
+    ],
+    "js_div_test": [
+        0.13625096681149595,
+        0.25554652182656795,
+        0.17127523170920542,
+        0.2709053428625124,
+        0.19883632843594437,
+        0.21496793815253226,
+        0.06868871994118739,
+        0.20695167394819478,
+        0.08494132012399375,
+        0.10232093935939025,
+        0.049299796197774276,
+        0.1151528676839011,
+        0.23895949667776337,
+        0.30092101814096733,
+        0.1738599862360346,
+        0.2060322775344604,
+        0.11590763567191499,
+        0.0626766685958193,
+        0.2325141976530475,
+        0.08336166410157196,
+        0.13319734847305642,
+        0.21540733011303503,
+        0.08359080732172285,
+        0.07632670032208802,
+        0.214104367855932,
+        0.06508414909578357,
+        0.10205933802726151,
+        0.22317500975753357,
+        0.13333392625086132,
+        0.212171480803226,
+        0.09853173450179059,
+        0.12966627371194753
+    ],
+    "sig_eff": [
+        0.08043,
+        0.09429,
+        0.08209,
+        0.09487,
+        0.08722,
+        0.09035,
+        0.06497,
+        0.08928,
+        0.06666,
+        0.07253,
+        0.05973,
+        0.07204,
+        0.09346,
+        0.09642,
+        0.082,
+        0.0812,
+        0.07351,
+        0.06285,
+        0.09229,
+        0.06814,
+        0.0728,
+        0.08779,
+        0.0667,
+        0.06427,
+        0.0874,
+        0.06397,
+        0.06992,
+        0.09103,
+        0.07571,
+        0.08523,
+        0.07147,
+        0.07293
+    ],
+    "bkg_rej": [
+        0.98043,
+        0.99429,
+        0.98209,
+        0.99487,
+        0.98722,
+        0.99035,
+        0.96497,
+        0.98928,
+        0.96666,
+        0.97253,
+        0.95973,
+        0.97204,
+        0.99346,
+        0.99642,
+        0.982,
+        0.9812,
+        0.97351,
+        0.96285,
+        0.99229,
+        0.96814,
+        0.9728,
+        0.98779,
+        0.9667,
+        0.96427,
+        0.9874,
+        0.96397,
+        0.96992,
+        0.99103,
+        0.97571,
+        0.98523,
+        0.9714700000000001,
+        0.97293
+    ],
+    "auc": [
+        0.78829655555,
+        0.8292565473499999,
+        0.7383182609,
+        0.84738740405,
+        0.7701494202000001,
+        0.8021993781500001,
+        0.70365614555,
+        0.8021137272,
+        0.73156647345,
+        0.7457445143,
+        0.66908717935,
+        0.7445504352000001,
+        0.8258271614,
+        0.82688181985,
+        0.80941820685,
+        0.8119007821499999,
+        0.7196477203,
+        0.70394970135,
+        0.85106555055,
+        0.7187733065499999,
+        0.7449106064000001,
+        0.84160006715,
+        0.7460510221000001,
+        0.6865016181000001,
+        0.82713181085,
+        0.6994353995,
+        0.7246399557000001,
+        0.8247886699,
+        0.7686632708,
+        0.7644778352500001,
+        0.7598005275999999,
+        0.7624164951500001
+    ]
+}

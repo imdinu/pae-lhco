@@ -17,4 +17,9 @@ plots/
 
 #misc files
 *.zip
+*.tar
+*.h5
+*.hdf
 backup/
+data/
+
