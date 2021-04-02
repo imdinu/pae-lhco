@@ -8,6 +8,8 @@
 #plots
 figures/
 plots/
+*.png
+*.svg
 
 #Python
 *.py[cod]
