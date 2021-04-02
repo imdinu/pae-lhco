@@ -9,10 +9,10 @@ from sklearn.model_selection import train_test_split
 
 from pae.utils import load_json
 from . import FEATURE_SETS, SCALERS
-from .base import AbstractDataloader
+from .base import BaseDataloader
 
 
-class LhcoRnDLoader(AbstractDataloader):
+class LhcoRnDLoader(BaseDataloader):
     """Data Loader for the clustered LHCO R&D dataset.
 
     Features data loading from multiple files (hdf), rescaling using

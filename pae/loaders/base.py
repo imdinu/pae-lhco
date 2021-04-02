@@ -5,19 +5,19 @@ from abc import ABC, abstractmethod, abstractproperty
 from pae.utils import load_json
 from . import FEATURE_SETS, SCALERS
 
-class AbstractDataloader(ABC):
+class BaseDataloader(ABC):
     """Abstract base class of a dataloader.
 
     Any data Loader Must implement the 'scaler' attribute, which is usually
-    choosen from 'sklearn.preprocessing'. 
+    choosen from the 'sklearn.preprocessing' module, but could also just be 
+    'NoneType' 
 
-    The three methods of this class that require to be implemented  
-    are: 'load_datasets', 'make_train_val' and 'make_test'
+    The interface of a dataloader is defined by the following methods:  
+      - 'load_datasets' 
+      - 'make_train_val'
+      - 'make_test'
     """
 
-    @abstractproperty
-    def scaler(self):
-        pass
 
     @abstractmethod
     def load_datasets(self):
@@ -32,9 +32,16 @@ class AbstractDataloader(ABC):
         pass
 
     @classmethod
-    def from_json(cls, json_file):
-        """Creates an instance of 'LhcoRnDLoader' based on a json file"""
-        kwargs = load_json(json_file)
+    def from_json(cls, path):
+        """Instantiates a dataloader based on kwargs from a json file.
+        
+        Args:
+            path (Path): Path to the json_file
+
+        Returns:
+            Instance of dataloader
+        """
+        kwargs = load_json(path)
         scaler = kwargs['scaler']
         if scaler is not None:
             kwargs['scaler'] = SCALERS[scaler](**kwargs['scaler_kwargs'])

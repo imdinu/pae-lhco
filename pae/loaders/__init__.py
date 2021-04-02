@@ -65,10 +65,11 @@ SCALERS = {
         'max_abs': MaxAbsScaler}
 
 DATASETS = {
-        'RnD': 'https://cernbox.cern.ch/index.php/s/qTPpq0uHvwYKWqM/download'
+        'RnD': 'https://cernbox.cern.ch/index.php/s/qTPpq0uHvwYKWqM/download',
+        'test_tiny': 'https://cernbox.cern.ch/index.php/s/v0dIs1wcKYAPXSl/download'
 }
 
-def download_dataset(key, store_path="../data/"):
+def download_dataset(key, path="../data/"):
     """Downlads the requested dataset from cerbox based on key. 
 
     All of the available keys can be found in the `DATASETS` dictionary from
@@ -76,25 +77,29 @@ def download_dataset(key, store_path="../data/"):
 
     Args:
         key (str): A valid dataset string key identifier 
-        store_path (Path): Path to folder where the data will be downloaded.
-            A folder will be created in this directory named after the key.
+        path (Path): Path to folder where the data will be downloaded.
+            A secondary folder will be created in this directory named after 
+            the daataset key.
     Returns:
         None
     """
+
+    # Retrive the dataset link
     try:
         dataset_url = DATASETS[key]
     except KeyError:
         print(f"'{key}'' is not a valid dataset, available datasets for "
               f"download are: {list(DATASETS.keys())}")
         raise
-
-    store_path = Path(store_path).joinpath(key)
+    
+    # Create folder structure (if necessary)
+    store_path = Path(path).joinpath(key)
     if not os.path.exists(store_path):
         os.mkdir(store_path)
-
     file_path = store_path.joinpath(f'{key}.tar')
-    ans = requests.get(dataset_url, stream=True)
 
+    # Download the dataset
+    ans = requests.get(dataset_url, stream=True)
     with open(file_path, "wb") as tarball:
         for chunk in tqdm(ans.iter_content(chunk_size=1024**2),
                           unit='kB',
@@ -102,8 +107,10 @@ def download_dataset(key, store_path="../data/"):
             if chunk:
                 tarball.write(chunk)
     
+    #Untar files
     tar_file = tarfile.open(file_path, "r:*")
     tar_file.extractall(file_path.parent)
     tar_file.close()
 
+    # Cleanup
     os.remove(file_path)
