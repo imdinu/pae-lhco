@@ -1,6 +1,8 @@
 """Defines the base abstractions for building DataLoaders."""
 
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
+
+from sklearn.base import TransformerMixin
 
 from pae.utils import load_json
 from . import FEATURE_SETS, SCALERS
@@ -20,17 +22,32 @@ class BaseDataloader(ABC):
 
 
     @abstractmethod
-    def load_datasets(self):
+    def load_data(self):
         pass
 
     @abstractmethod
-    def make_train_val(self):
+    def make_dataset(self):
         pass
 
-    @abstractmethod
-    def make_test(self):
-        pass
+    @property
+    def scaler(self):
+        return self.scaler
 
+    @scaler.setter
+    def scaler(self, scaler):
+        if isinstance(scaler, str):
+            try:
+                self.scaler = SCALERS[scaler]
+            except KeyError:
+                print(f"'{scaler}' is not a known scaler description. "
+                      f"Available options are {list(SCALERS.keys())}")
+                raise
+        elif isinstance(scaler, TransformerMixin):
+            self.scaler = scaler
+        else:
+            raise TypeError("Scaler must either be a scikit-learn.preprocessing"
+                        "transflormation or a string literal description of one")
+              
     @classmethod
     def from_json(cls, path):
         """Instantiates a dataloader based on kwargs from a json file.
@@ -48,3 +65,11 @@ class BaseDataloader(ABC):
         del kwargs["scaler_kwargs"]
         return cls(**kwargs)
     
+class BaseDatasetSpec(ABC):
+    """Abstract base class for a dataset specification
+
+    """
+
+    @classmethod
+    def from_json(cls, Path):
+        pass

@@ -66,20 +66,26 @@ SCALERS = {
 
 DATASETS = {
         'RnD': 'https://cernbox.cern.ch/index.php/s/qTPpq0uHvwYKWqM/download',
-        'test_tiny': 'https://cernbox.cern.ch/index.php/s/v0dIs1wcKYAPXSl/download'
+        'test_tiny': 'https://cernbox.cern.ch/index.php/s/v0dIs1wcKYAPXSl/download',
 }
 
-def download_dataset(key, path="../data/"):
+DATASETS_IMG = {
+        'RnD_images_sig': 'https://cernbox.cern.ch/index.php/s/lBIu16xOI4P9hf9/download',
+        'Rnd_images_bkg': 'https://cernbox.cern.ch/index.php/s/5TlR3C4htOEj8FT/download',
+}
+
+def download_dataset(key, path="../data/", images=False):
     """Downlads the requested dataset from cerbox based on key. 
 
     All of the available keys can be found in the `DATASETS` dictionary from
     this module
 
     Args:
-        key (str): A valid dataset string key identifier 
+        key (str): String literal of a valid dataset identifier.
         path (Path): Path to folder where the data will be downloaded.
             A secondary folder will be created in this directory named after 
             the daataset key.
+        images (bool): Wheter or not to also download jet image data
     Returns:
         None
     """
@@ -88,25 +94,20 @@ def download_dataset(key, path="../data/"):
     try:
         dataset_url = DATASETS[key]
     except KeyError:
-        print(f"'{key}'' is not a valid dataset, available datasets for "
+        print(f"'{key}' is not a valid dataset, available datasets for "
               f"download are: {list(DATASETS.keys())}")
         raise
-    
+
     # Create folder structure (if necessary)
-    store_path = Path(path).joinpath(key)
+    store_path = Path(path).joinpath(key.split('_')[0])
     if not os.path.exists(store_path):
         os.mkdir(store_path)
     file_path = store_path.joinpath(f'{key}.tar')
 
-    # Download the dataset
-    ans = requests.get(dataset_url, stream=True)
-    with open(file_path, "wb") as tarball:
-        for chunk in tqdm(ans.iter_content(chunk_size=1024**2),
-                          unit='kB',
-                          desc=f"Downloading {key} data"):
-            if chunk:
-                tarball.write(chunk)
-    
+    # Download the file
+    descriptor = f"Downloading {key} data"
+    download_file(dataset_url, file_path, descriptor)
+
     #Untar files
     tar_file = tarfile.open(file_path, "r:*")
     tar_file.extractall(file_path.parent)
@@ -114,3 +115,33 @@ def download_dataset(key, path="../data/"):
 
     # Cleanup
     os.remove(file_path)
+
+    # Download images
+    if images:
+        for img_label in DATASETS_IMG.keys():
+            if key in img_label:
+                descriptor = f"Downloading {img_label} data"
+                file_path = store_path.joinpath(f'{img_label}.h5')
+                download_file(dataset_url, file_path, descriptor=descriptor, 
+                              timeout=None)
+
+def download_file(url, path, descriptor=None, chunk_size=1048576, timeout=None):
+    """Downloads a file to the secified path
+    
+    Args:
+        url (str): URL of the file
+        path (Path): The location where the file will be saved
+        descriptor (string): Progres bar annotation
+        chunksize  (int): Number of bytes per chunk
+        timeout (float or tuple): Seconds to wait for the response
+
+    Returns:
+        None
+    """
+    ans = requests.get(url, stream=True, timeout=timeout)
+    with open(path, "wb") as file:
+        for chunk in tqdm(ans.iter_content(chunk_size=1024**2),
+                          unit='kB',
+                          desc=descriptor):
+            if chunk:
+                file.write(chunk)
