@@ -1,7 +1,7 @@
 import numpy as np
 
-from utils import load_json
-from models import OPTIMIZERS, ACTIVATIONS, REGULARIZERS, MODELS, CALLBACKS
+from pae.utils import load_json
+from pae.models import OPTIMIZERS, ACTIVATIONS, REGULARIZERS, MODELS, CALLBACKS
 
 class Pae():
     """Probabilistic Autoencoder network architecture

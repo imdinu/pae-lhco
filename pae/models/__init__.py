@@ -6,8 +6,8 @@ import tensorflow.keras.activations as tfka
 import tensorflow.keras.regularizers as tfkr
 import tensorflow.keras.callbacks as tfc
 
-from models.autoencoder import DenseAutoencoder
-from models.flows import MAF, CondMAF
+from pae.models.autoencoder import DenseAutoencoder
+from pae.models.flows import MAF, CondMAF
 
 OPTIMIZERS = {
     'adadelta': tfko.Adadelta,

@@ -7,7 +7,7 @@ import plotly.io as pio
 
 from plotly.subplots import make_subplots
 
-from loaders import FEATURE_SETS
+from pae.loaders import FEATURE_SETS
 from .utils import optimal_grid
 
 def feature_plots(data, features='all', color='steelblue'):

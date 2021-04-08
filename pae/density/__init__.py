@@ -1,3 +1,3 @@
 """Density estimators module"""
 
-from density.estimators import *
+from pae.density.estimators import *

@@ -1,6 +1,6 @@
 """Concrete implementations of density estimators"""
 
-from density.base import AbstractDensityEstimator
+from .base import AbstractDensityEstimator
 
 import numpy as np
 from KDEpy import FFTKDE
@@ -12,7 +12,8 @@ class GMM(AbstractDensityEstimator):
     """Wrapper around scikit GaussianMixture"""
     
     def __init__(self, n_components=200, covariance_type='full'):
-        self._estimator = GaussianMixture(n_components, covariance_type)
+        self._estimator = GaussianMixture(n_components, 
+                                          covariance_type=covariance_type)
 
     @property
     def estimator(self):

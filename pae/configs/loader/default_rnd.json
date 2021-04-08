@@ -1,9 +1,7 @@
 {
     "file_paths": {
-        "bkg": "../../data/3jet/RnD/bkgHLF_merged.h5",
-        "sig": "../../data/3jet/RnD/sigHLF_merged.h5",
-        "sig3": "../../data/3jet/RnD_3prong/sigHLF_merged.h5",
-        "bbox_bkg": "../../data/3jet/BBOXbkg/bkgHLF_merged.h5"
+        "bkg": "../data/RnD/RnD_scalars_bkg.h5",
+        "sig": "../data/RnD/RnD_scalars_sig.h5"
     },
     "features": "all",
     "scaler": "quantile",

@@ -1,6 +1,0 @@
-{
-    "bkg": "../data/3jet/RnD/bkgHLF_merged.h5",
-    "sig": "../data/3jet/RnD/sigHLF_merged.h5",
-    "sig3": "../data/3jet/RnD_3prong/sigHLF_merged.h5",
-    "bbox_bkg": "../data/3jet/BBOXbkg/bkgHLF_merged.h5"
-}
