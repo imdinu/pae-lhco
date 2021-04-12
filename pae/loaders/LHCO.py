@@ -5,6 +5,7 @@ from functools import reduce
 from collections import Counter, ChainMap
 from operator import add
 
+import h5py
 import pandas as pd
 import numpy as np
 
@@ -348,12 +349,12 @@ class ScalarLoaderLHCO(BaseDataloader):
             for key, size in sample_sizes.items():
                 data = pd.read_hdf(self._file_paths[key], 
                                    stop=size)[self.__features]
-                self._events[key] = data
+                self._events[key] = data.to_numpy()
                 self._available_events[key] = np.ones(len(data)).astype(bool)
         elif sample_sizes is None:
             for key, path in self._file_paths.items():
                 data = pd.read_hdf(path)[self.__features]
-                self._events[key] = data
+                self._events[key] = data.to_numpy()
                 self._available_events[key] = np.ones(len(data)).astype(bool)
         else:
             raise ValueError("'sample_sizes' must be a dictionary")
@@ -381,10 +382,11 @@ class ScalarLoaderLHCO(BaseDataloader):
             self._events[fit_key] = self.scaler.fit_transform(
                                                 self._events[fit_key])
             for key in dataset_keys:
-                self._events[key] = self.scaler.fit_transform(
+                self._events[key] = self.scaler.transform(
                                                 self._events[key])
+        return self
 
-    def get_data(self, indices, exhaust=True):
+    def make_dataset(self, indices, exhaust=True):
         """Creates a dataset using the previously loaded data based on indices.
 
         Args:
@@ -399,20 +401,102 @@ class ScalarLoaderLHCO(BaseDataloader):
         """
 
         dataset = {}
-
         for key, data_indexes in indices.items():
-            events_selected = [self._events[label][idx] 
-                               for label, idx 
-                               in data_indexes.items()]
+            events_selected = self[data_indexes]
             if exhaust:
                 for label, idx in data_indexes.items():
                     self._available_events[label][idx] = False 
             if self.name is not None:
-                dataset[f'{self.name}_{key}'] = np.concatenate(events_selected)
+                dataset[f'{self.name}_{key}'] = events_selected
             else:
-                dataset[key] = np.concatenate(events_selected)
+                dataset[key] = events_selected
         return dataset
 
+class ImageLoaderLHCO(BaseDataloader):
+    """Data loader for LHCO jet images.
+    
+    Attributes:
+        name (str): Name attributed to the data.
+    """
+    def __init__(self, file_paths, name):
+        """Creates a dataloader for LHCO jet image data.
+        
+        Args:
+            file_paths (dict): Dictonary of data label keys and 
+                file path values.
+            name (str): string literal name of instance (used by the
+                DatasetBuilder for labeling)
+        
+        Raises:
+            ValueError: if 'features' argument is not a list nor a string
+        """
+        super().__init__(file_paths, None, name)
+
+    def rescale(self):
+        """Applies rescaling transformation to loaded data.
+
+        Returns:
+            None
+        """
+        raise NotImplementedError("Jet images are already scaled")
+
+    def load_events(self, sample_sizes=None):
+        """Loads events baswed on given sample_sizes.
+
+        This function relies on the `file_paths` attribute for the events'
+        location and the `features` attribute for column selection.
+
+        Args:
+            sample_size (dict, optional): the number of events to be read.
+                if not included the entire file will be loaded
+
+        Returns:
+            self: instance of ScalarLoaderLHCO 
+
+        Raises:
+            ValueError: if sample size is not of 'NoneType', nor 'dict'
+        """
+
+        if isinstance(sample_sizes, dict):
+            for key, size in sample_sizes.items():
+                data = h5py.File(self._file_paths[key], 'r')['multijet'][:size]
+                self._events[key] = data
+                self._available_events[key] = np.ones(len(data)).astype(bool)
+        elif sample_sizes is None:
+            for key, path in self._file_paths.items():
+                data = h5py.File(path, 'r')['multijet']
+                self._events[key] = data
+                self._available_events[key] = np.ones(len(data)).astype(bool)
+        else:
+            raise ValueError("'sample_sizes' must be a dictionary")
+        return self
+
+    def make_dataset(self, indices, exhaust=True):
+        """Creates a dataset using the previously loaded data based on indices.
+
+        Args:
+            indices (dict): A nested dictionary of string literal keys and 
+                values which are, in turn, dictionaries of index values.
+            exhaust (bool): weather or not to remove the event indices from 
+                the available events pool
+                
+        Returns:
+            Dictionary of samples labeled acording to indices keys and 
+            instance name
+        """
+
+        dataset = {}
+        for key, data_indexes in indices.items():
+            events_selected = self[data_indexes]
+            if exhaust:
+                for label, idx in data_indexes.items():
+                    self._available_events[label][idx] = False 
+            if self.name is not None:
+                dataset[f'{self.name}_{key}'] = events_selected
+            else:
+                dataset[key] = events_selected
+        
+        return dataset
 
     
 class DatasetBuilder(BaseDatasetBuilder):
@@ -501,7 +585,7 @@ class DatasetBuilder(BaseDatasetBuilder):
 
         all_counts = self.__counts_for_datasets(dataset_spec)
         all_indices = self.__get_event_indexes(all_counts, replace, shuffle)
-        
+        print(all_counts)
 
         dataset_indices = {}
         for key, dataset in dataset_spec.items():
@@ -511,7 +595,7 @@ class DatasetBuilder(BaseDatasetBuilder):
                     all_indices[k][:v], all_indices[k][v:]
             dataset_indices[key] = indices
 
-        dataset = [loader.get_data(dataset_indices, exhaust=exhaust) 
+        dataset = [loader.make_dataset(dataset_indices, exhaust=exhaust) 
                    for loader in self.loaders]
         self.__check_loader_counts()
 
@@ -523,12 +607,13 @@ class DatasetBuilder(BaseDatasetBuilder):
                 loader.name = f"DataLoader_{i:02d}"
 
     def __check_loader_counts(self):
-        available = [loader._available_events for loader in self.loaders]
-        if all(ele == available[0] for ele in available):
-            self._available_events = available[0]
-        else:    
-            raise RuntimeError("Different number of available events across "
-                               "dataloaders")
+        pass
+        # available = [loader._available_events for loader in self.loaders]
+        # if all(ele == available[0] for ele in available):
+        #     self._available_events = available[0]
+        # else:    
+        #     raise RuntimeError("Different number of available events across "
+        #                        "dataloaders")
         
     def __get_event_indexes(self, dataset_spec, replace, shuffle):
         self.__check_loader_counts()

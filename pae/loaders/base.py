@@ -5,6 +5,7 @@ Defines the base abstractions for building DataLoaders, and dataset builders
 
 from abc import ABC, abstractmethod
 
+import numpy as np
 from sklearn.base import TransformerMixin
 
 from pae.utils import load_json
@@ -18,7 +19,7 @@ class BaseDataloader(ABC):
     methods:
         - 'load_files'
         - 'rescale'
-        - 'get_data'
+        - 'make_dataset'
     """
     @abstractmethod
     def __init__(self, file_paths, scaler, name):
@@ -43,7 +44,14 @@ class BaseDataloader(ABC):
         return sum([len(x) for x in self._events.values()])
 
     def __getitem__(self, key):
-        return self._events[key]
+        if isinstance(key, str):
+            return self._events[key]
+        elif isinstance(key, dict):
+            return np.concatenate([self._events[label][idx] 
+                                   for label, idx 
+                                   in key.items()])
+        else:
+            raise KeyError(key)
 
     @abstractmethod
     def load_events(self):
@@ -54,7 +62,7 @@ class BaseDataloader(ABC):
         pass
 
     @abstractmethod
-    def get_data(self):
+    def make_dataset(self):
         pass
 
     @property
@@ -66,7 +74,7 @@ class BaseDataloader(ABC):
     def scaler(self, scaler):
         if isinstance(scaler, str):
             try:
-                self.scaler = SCALERS[scaler]
+                self._scaler = SCALERS[scaler]()
             except KeyError:
                 print(f"'{scaler}' is not a known scaler description. "
                       f"Available options are {list(SCALERS.keys())}")
@@ -90,14 +98,20 @@ class BaseDataloader(ABC):
         """
         kwargs = load_json(path)
         
-        scaler = kwargs.pop('scaler')
-        if 'scaler_kwargs' in kwargs.keys():
-            sclaer_kwargs = kwargs.pop('scaler_kwargs')
-            scaler = SCALERS[scaler](**sclaer_kwargs)
+        if 'scaler' in kwargs:
+            scaler = kwargs.pop('scaler')
+            if 'scaler_kwargs' in kwargs.keys():
+                sclaer_kwargs = kwargs.pop('scaler_kwargs')
+                if scaler is not None:
+                    scaler = SCALERS[scaler](**sclaer_kwargs)
+            else:
+                if scaler is not None:
+                    scaler = SCALERS[scaler]
+            obj = cls(**kwargs)
+            obj.scaler = scaler
         else:
-            scaler = SCALERS[scaler]
-        obj = cls(**kwargs)
-        obj.scaler = scaler
+            obj = cls(**kwargs)
+            
         return obj
 
 class BaseDatasetBuilder(ABC):

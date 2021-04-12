@@ -24,10 +24,10 @@ class GMM(AbstractDensityEstimator):
         self._estimator = estimator
 
     def fit(self, data, range=None):
-        self._estimator.fit(data.reshape(-1,1))
+        self._estimator.fit(data)
 
     def evaluate(self, data):
-        return np.exp(self._estimator.score_samples(data.reshape(-1,1)))
+        return np.exp(self._estimator.score_samples(data))
 
     def get_weights(self, data):
         return 1/self.evaluate(data)
@@ -60,7 +60,7 @@ class ConvKDE(AbstractDensityEstimator):
         self.f_interp = interp1d(x_ref, y_ref, kind="cubic", assume_sorted=True)
 
     def evaluate(self, data):
-        return self.f_interp(data)
+        return self.f_interp(data).ravel()
 
     def get_weights(self, data):
-        return 1/(self.evaluate(data))
+        return 1/(self.evaluate(data)).ravel()
