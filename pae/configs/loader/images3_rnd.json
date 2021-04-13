@@ -1,0 +1,7 @@
+{
+    "name": "x",
+    "file_paths": {
+        "bkg": "../data/imgs/bkg_imgs.h5",
+        "sig": "../data/imgs/sig_imgs.h5"
+    }
+}

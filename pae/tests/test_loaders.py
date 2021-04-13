@@ -34,7 +34,7 @@ class TestDatasets(unittest.TestCase):
         self.assertTrue(os.path.isfile(path.joinpath('RnD_scalars_bkg.h5')))
         self.assertTrue(os.path.isfile(path.joinpath('RnD_scalars_sig.h5')))
 
-class TestScalarLoaderLHCO(unittest.TestCase):
+class TestLoaders(unittest.TestCase):
     
     @classmethod
     def setUpClass(cls):
@@ -42,13 +42,21 @@ class TestScalarLoaderLHCO(unittest.TestCase):
             "bkg": "data/test/RnD_scalars_bkg.h5",
             "sig": "data/test/RnD_scalars_sig.h5"
         }
+        file_paths_img = {
+            "bkg": "data/RnD/bkg_imgs.h5",
+            "sig": "data/RnD/sig_imgs.h5"
+        }
+
         cls.loader_all = ScalarLoaderLHCO(file_paths, features='all', 
                                            scaler='min_max', name='x')
         cls.loader_mjj = ScalarLoaderLHCO(file_paths, features=['mjj'], 
                                            scaler=None, name='mjj')
         cls.loader_cfg = ScalarLoaderLHCO.from_json(
                                 "pae/configs/loader/scalar_test.json")
+
+        cls.loader_img = ImageLoaderLHCO(file_paths_img, name='x')
         cls.sample_size = {'sig':500, 'bkg': 1000}
+        cls.builder = DatasetBuilder()
 
     @classmethod
     def tearDownClass(cls):
@@ -58,6 +66,7 @@ class TestScalarLoaderLHCO(unittest.TestCase):
         self.loader_all.load_events(self.sample_size)
         self.loader_mjj.load_events()
         self.loader_cfg.load_events(self.sample_size)
+        self.loader_img.load_events(self.sample_size)
 
     def tearDown(self):
         pass
@@ -66,7 +75,8 @@ class TestScalarLoaderLHCO(unittest.TestCase):
         self.assertEqual(len(self.loader_mjj), 10_000)
         self.assertEqual(len(self.loader_all), 1_500)
         self.assertEqual(len(self.loader_cfg), 1_500)
-        
+        self.assertEqual(len(self.loader_img), 1_500)
+
         bkg = sum(self.loader_mjj._available_events['bkg'])
         sig = sum(self.loader_mjj._available_events['sig'])
         self.assertEqual(bkg, 9128)
@@ -77,6 +87,7 @@ class TestScalarLoaderLHCO(unittest.TestCase):
         self.assertAlmostEqual(self.loader_all['bkg'].max(), 1, 10)
         
         self.assertRaises(AttributeError, self.loader_mjj.rescale, 'bkg')
+        self.assertRaises(NotImplementedError, self.loader_img.rescale)
 
         self.loader_cfg.rescale('bkg')
         bkg = self.loader_cfg['bkg']
@@ -91,6 +102,9 @@ class TestScalarLoaderLHCO(unittest.TestCase):
         data_cfg = self.loader_cfg[indices_cfg]
         self.assertEqual(len(data_cfg), 200)
 
+        data_img = self.loader_img[indices_cfg]
+        self.assertEqual(data_img.shape, (200, 64, 64, 1))
+
         indices_all = {'train':{'bkg': np.arange(500,1000)}, 
                        'test':{'bkg': np.arange(500), 'sig':np.arange(500)}}
 
@@ -100,7 +114,20 @@ class TestScalarLoaderLHCO(unittest.TestCase):
         self.assertEqual(len(dataset_all['x_test']), 1000)
 
         dataset_mjj = self.loader_mjj.make_dataset(indices_all)
-        self.assertListEqual(list(dataset_mjj.keys()), ['mjj_train', 'mjj_test'])
+        self.assertListEqual(list(dataset_mjj.keys()), 
+                             ['mjj_train', 'mjj_test'])
+
+    def test_dataset_builder(self):
+        builder = DatasetBuilder(self.loader_img, self.loader_mjj)
+        builder.data_preparation(sample_sizes=self.sample_size)
+
+        d0 = builder.make_dataset(train={'bkg': 1_000}, validation_split=0.33333)
+        self.assertEqual(d0['x_train'].shape, (667, 64, 64, 1))
+        self.assertRaises(RuntimeError, builder.make_dataset, None, {'bkg': 1_000}, 0)
+        self.assertLessEqual(list(d0.keys()), ['x_train', 'mjj_train', 'labels_train'])
+
+        dr = builder.make_dataset(test={'sig': 1_000}, validation_split=0, replace=True)
+        self.assertLessEqual(len(np.unique(dr['x_test'], axis=0)), 500)
 
 if __name__ == '__main__':
     unittest.main()
