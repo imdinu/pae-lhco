@@ -1,0 +1,11 @@
+{
+    "name": "x",
+    "file_paths": {
+        "bkg": "../data/RnD/RnD_scalars_bkg.h5",
+        "sig": "../data/RnD/RnD_scalars_sig.h5"
+    },
+    "features": ["pt1", "m1", "32tau1", "21tau1", 
+                 "pt2", "m2", "32tau2", "21tau2"],
+    "scaler": "min_max",
+    "scaler_kwargs": {}
+}
