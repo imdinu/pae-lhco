@@ -41,7 +41,7 @@ class BaseDataloader(ABC):
         self.scaler = scaler
 
     def __len__(self):
-        return sum([len(x) for x in self._events.values()])
+        return sum(len(x) for x in self._events.values())
 
     def __getitem__(self, key):
         if isinstance(key, str):
@@ -61,9 +61,32 @@ class BaseDataloader(ABC):
     def rescale(self):
         pass
 
-    @abstractmethod
-    def make_dataset(self):
-        pass
+    def make_dataset(self, indices, exhaust=False, kfold=None):
+        """Creates a dataset using the previously loaded data based on indices.
+
+        Args:
+            indices (dict): A nested dictionary of string literal keys and 
+                values which are, in turn, dictionaries of index values.
+            exhaust (bool): weather or not to remove the event indices from 
+                the available events pool
+            kfold (int): Number of 
+                
+        Returns:
+            Dictionary of samples labeled acording to indices keys and 
+            instance name
+        """
+
+        dataset = {}
+        for key, data_indexes in indices.items():
+            events_selected = self[data_indexes]
+            if exhaust:
+                for label, idx in data_indexes.items():
+                    self._available_events[label][idx] = False 
+            if self.name is not None:
+                dataset[f'{self.name}_{key}'] = events_selected
+            else:
+                dataset[key] = events_selected
+        return dataset
 
     @property
     def scaler(self):
@@ -97,21 +120,20 @@ class BaseDataloader(ABC):
             Instance of data loader
         """
         kwargs = load_json(path)
-        
+
         if 'scaler' in kwargs:
             scaler = kwargs.pop('scaler')
             if 'scaler_kwargs' in kwargs.keys():
                 sclaer_kwargs = kwargs.pop('scaler_kwargs')
                 if scaler is not None:
                     scaler = SCALERS[scaler](**sclaer_kwargs)
-            else:
-                if scaler is not None:
-                    scaler = SCALERS[scaler]
+            elif scaler is not None:
+                scaler = SCALERS[scaler]
             obj = cls(**kwargs)
             obj.scaler = scaler
         else:
             obj = cls(**kwargs)
-            
+
         return obj
 
 class BaseDatasetBuilder(ABC):

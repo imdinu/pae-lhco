@@ -23,7 +23,8 @@ class ScalarLoaderLHCO(BaseDataloader):
             (usually from scikit.preprocessing module) 
     """
 
-    def __init__(self, file_paths, features="all", scaler=None, name=None):
+    def __init__(self, file_paths, features="all", scaler=None, 
+                 nan=0., inf=0, name=None):
         """Creates a dataloader for LHCO scalar data.
         
         Args:
@@ -33,6 +34,8 @@ class ScalarLoaderLHCO(BaseDataloader):
                 from the data files
             scaler (callable): Data rescaling transfomation object
                 (usually from scikit.preprocessing module)
+            inf (int or float): value to replace 'inf' in data
+            nan (int or float): value to replace 'nan' in data
             name (str): string literal name of instance (used by the
                 DatasetBuilder for labeling)
         
@@ -40,6 +43,9 @@ class ScalarLoaderLHCO(BaseDataloader):
             ValueError: if 'features' argument is not a list nor a string
         """
         super().__init__(file_paths, scaler, name)
+
+        self.nan = nan
+        self.inf = inf
 
         if isinstance(features, list):
             self.__features = features
@@ -69,12 +75,15 @@ class ScalarLoaderLHCO(BaseDataloader):
         if isinstance(sample_sizes, dict):
             for key, size in sample_sizes.items():
                 data = pd.read_hdf(self._file_paths[key], 
-                                   stop=size)[self.__features]
+                                   stop=size)[self.__features] \
+                                   .fillna(self.nan) \
+                                   .replace(np.inf, self.inf)
                 self._events[key] = data.to_numpy()
                 self._available_events[key] = np.ones(len(data)).astype(bool)
         elif sample_sizes is None:
             for key, path in self._file_paths.items():
-                data = pd.read_hdf(path)[self.__features]
+                data = pd.read_hdf(path)[self.__features].fillna(self.nan) \
+                            .replace(np.inf, self.inf)
                 self._events[key] = data.to_numpy()
                 self._available_events[key] = np.ones(len(data)).astype(bool)
         else:
@@ -98,13 +107,12 @@ class ScalarLoaderLHCO(BaseDataloader):
         dataset_keys = list(self._events.keys())
         if fit_key not in dataset_keys:
             raise KeyError("Unrecognized value of 'fit_key'")
-        else:
-            dataset_keys.remove(fit_key)
-            self._events[fit_key] = self.scaler.fit_transform(
-                                                self._events[fit_key])
-            for key in dataset_keys:
-                self._events[key] = self.scaler.transform(
-                                                self._events[key])
+        dataset_keys.remove(fit_key)
+        self._events[fit_key] = self.scaler.fit_transform(
+                                            self._events[fit_key])
+        for key in dataset_keys:
+            self._events[key] = self.scaler.transform(
+                                            self._events[key])
         return self
 
     def make_dataset(self, indices, exhaust=True):
@@ -192,32 +200,6 @@ class ImageLoaderLHCO(BaseDataloader):
             raise ValueError("'sample_sizes' must be a dictionary")
         return self
 
-    def make_dataset(self, indices, exhaust=True):
-        """Creates a dataset using the previously loaded data based on indices.
-
-        Args:
-            indices (dict): A nested dictionary of string literal keys and 
-                values which are, in turn, dictionaries of index values.
-            exhaust (bool): weather or not to remove the event indices from 
-                the available events pool
-                
-        Returns:
-            Dictionary of samples labeled acording to indices keys and 
-            instance name
-        """
-
-        dataset = {}
-        for key, data_indexes in indices.items():
-            events_selected = self[data_indexes]
-            if exhaust:
-                for label, idx in data_indexes.items():
-                    self._available_events[label][idx] = False 
-            if self.name is not None:
-                dataset[f'{self.name}_{key}'] = events_selected
-            else:
-                dataset[key] = events_selected
-        
-        return dataset
 
     
 class DatasetBuilder(BaseDatasetBuilder):
@@ -238,7 +220,7 @@ class DatasetBuilder(BaseDatasetBuilder):
         self.loaders = loaders
         self.__check_names()
         self._available_events = {}
-        self._data_loaded = False
+        self._data_loaded = None
 
     def data_preparation(self, fit_key=None, sample_sizes=None):
         """Loads and rescales the data using all loaders.
@@ -257,9 +239,9 @@ class DatasetBuilder(BaseDatasetBuilder):
                 loader.rescale(fit_key)
 
         self._available_events = self.loaders[0]._available_events
-        self._data_loaded = True
+        self._data_loaded = sample_sizes
 
-    def make_dataset(self, train=None, test=None, validation_split=0.2, 
+    def make_dataset(self, train=None, test=None, validation_split=0, 
                      replace=False, shuffle=True, exhaust=True):
         """Creates a dataset based on configuration dictionary
 
@@ -299,11 +281,15 @@ class DatasetBuilder(BaseDatasetBuilder):
         else:
             valid = None
 
-        dataset_spec = {k:v for k,v 
+        dataset_spec = {k: v for k, v 
                         in zip(['train', 'test', 'valid'], 
                                 [train, test, valid])
                         if v}
 
+        return self._dataset_from_spec(dataset_spec, replace, 
+                                        shuffle, exhaust)
+
+    def _dataset_from_spec(self, dataset_spec, replace, shuffle, exhaust):
         all_counts = self.__counts_for_datasets(dataset_spec)
         all_indices = self.__get_event_indexes(all_counts, replace, shuffle)
 
@@ -327,6 +313,7 @@ class DatasetBuilder(BaseDatasetBuilder):
                                                         in counts.items()])
 
         return result
+
 
     def __check_names(self):
         for i, loader in enumerate(self.loaders):
@@ -353,13 +340,12 @@ class DatasetBuilder(BaseDatasetBuilder):
                 else:
                     idx = idx_all[:count]
                 indices[key] = idx
+            elif sum(self._available_events[key]) == 0:
+                raise RuntimeError(f"All {key} events have already "
+                                   "previously been exhausted")
             else:
-                if sum(self._available_events[key]) == 0:
-                    raise RuntimeError(f"All {key} events have already "
-                                       "previously been exhausted")
-                else:
-                    raise ValueError("Not enough events to create dataset, "
-                                     "try using 'replace = True'")
+                raise ValueError("Not enough events to create dataset, "
+                                 "try using 'replace = True'")
         return indices
 
     def __counts_for_datasets(self, dataset_spec):

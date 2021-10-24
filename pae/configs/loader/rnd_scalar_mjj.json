@@ -1,0 +1,10 @@
+{
+    "name": "mjj",
+    "file_paths": {
+        "bkg": "../../data/RnD_scalars_bkg.h5",
+        "sig": "../../data/RnD_scalars_sig.h5"
+    },
+    "features": ["mj1j2"],
+    "scaler": null,
+    "scaler_kwargs": {}
+}

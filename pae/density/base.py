@@ -2,6 +2,8 @@
 
 from abc import ABC, abstractmethod, abstractproperty
 
+import numpy as np
+
 class AbstractDensityEstimator(ABC):
     """Abstract base class of a density estimator.
 
@@ -23,3 +25,6 @@ class AbstractDensityEstimator(ABC):
     @abstractmethod
     def get_weights(self):
         pass
+
+    def scale_down(self, x):
+        return x/np.min(x)

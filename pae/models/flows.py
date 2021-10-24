@@ -241,3 +241,23 @@ class CondMAF(Flow):
         elif i == n_layers-1:
             order = 'right-to-left'
         return order
+
+def nf_loss_bootstrap(_, y_pred):
+    """Loss function for NF model.
+    
+    Although this function could have easily been replaced by a `lambda`, it
+    appears that the Tensorflow framework does not allow a model with such a
+    loss function be saved and loaded. Thus, the function needs to be named.
+    This is just a bootstrap to allow model checkpoints. The output is 
+    `-y_pred` since the model is trained by maximizing log-likelihood, or,
+    in this case, minimizing its additive inverse.
+
+    Args:
+        _ (object): data true label. Not used for anything, but any viable 
+                    loss function must have 2 arguments
+        y_pred (tf.Tensor): predicted log prob of the NF model
+
+    Returns:
+        -y_pred
+    """
+    return -y_pred

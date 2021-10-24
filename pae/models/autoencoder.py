@@ -191,8 +191,7 @@ class DenseAutoencoder(Autoencoder):
     def call(self, inputs):
         """Run the inputs through the full autoencoder"""
         encoding = self.encoder(inputs)
-        reconstructed = self.decoder(encoding)
-        return reconstructed
+        return self.decoder(encoding)
     
     def encode(self, inputs):
         """Genereate the latent representation of the inputs"""

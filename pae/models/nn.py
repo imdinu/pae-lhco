@@ -1,7 +1,12 @@
+from pathlib import Path
+import os
+
 import numpy as np
+import tensorflow as tf
 
 from pae.utils import load_json
 from pae.models import OPTIMIZERS, ACTIVATIONS, REGULARIZERS, MODELS, CALLBACKS
+from pae.models.flows import nf_loss_bootstrap
 
 class Pae():
     """Probabilistic Autoencoder network architecture
@@ -72,6 +77,12 @@ class Pae():
         return -0.5*np.dot(reco_error,self.sigma_square**(-1)) - \
                 0.5*np.linalg.norm(byz,axis=1)**2 + detJ
 
+    def fit_ae(self, ds_train, **kwargs):
+        self.history['ae'] = self._ae.fit(ds_train, **kwargs)
+
+    def fit_nf(self, ds_train, **kwargs):
+        self.history['nf'] = self._nf.fit(ds_train, **kwargs)
+
     def fit(self, x, c=None, kwargs_ae=None, kwargs_nf=None):
         """Trains the autoencoder and then the flow model"""
         
@@ -104,6 +115,43 @@ class Pae():
                                             **kwargs_nf)
         self.is_fit = True
 
+    def save_model(self, dir=None):
+        """Saves the AE and NF models in the given directory.
+
+        Args:
+            dir: path of the directory where the models will be saved
+
+        Returns:
+            None
+        """
+
+        raise NotImplementedError("Functionality not yet available")
+        # ae_path = Path(dir) / "ae/"
+        # nf_path = Path(dir) / "nf/"
+        # if not os.path.isdir(ae_path):
+        #     os.mkdir(ae_path)
+        # if not os.path.isdir(nf_path):
+        #     os.mkdir(nf_path)
+        # self.ae.save(ae_path)
+        # self.nf.save(nf_path)
+
+    def load_model(self, dir=None):
+        """Loads the AE and NF models from the given directory.
+        
+        Args:
+            dir: path of the directory containing the models
+
+        Returns:
+            None
+        """
+        raise NotImplementedError("Functionality not yet available")
+        # ae_path = Path(dir) / "ae/"
+        # nf_path = Path(dir) / "nf/"
+        # self.ae = tf.keras.models.load_model(ae_path)
+        # custom_objects = {"nf_loss_bootstrap": nf_loss_bootstrap}
+        # with tf.keras.utils.custom_object_scope(custom_objects):
+        #     self.nf = tf.keras.models.load_model(nf_path)
+
 
 class PaeBuilder():
     """Builder class for PAE objects.
@@ -133,18 +181,15 @@ class PaeBuilder():
     @classmethod
     def from_json(cls, json_file):
         """Creates a Pae object from a configuration file"""
-        if isinstance(json_file, dict):
-            pae_config = json_file
-        else:
-            pae_config = load_json(json_file)
-        
+        pae_config = json_file if isinstance(json_file, dict) \
+                            else load_json(json_file)
         ae_config = {key.split(':')[1]:pae_config.pop(key) 
             for key in list(pae_config.keys()) 
             if 'AE:' in key}
         nf_config = {key.split(':')[1]:pae_config.pop(key) 
                     for key in list(pae_config.keys()) 
                     if 'NF:' in key}
-        
+
         builder = cls()
 
         builder._interpret_args(pae_config)
@@ -234,7 +279,7 @@ class PaeBuilder():
         self._ae.compile(self._optim_ae, loss)
         self._compiled_ae = True
 
-    def compile_nf(self, loss=lambda _, log_p: -log_p):
+    def compile_nf(self, loss=nf_loss_bootstrap):
         """Compile the Flow model using the given loss function"""
         if self._optim_nf is None:
             raise RuntimeError('Normalizing flow model not set. Use '

@@ -24,4 +24,6 @@ plots/
 *.hdf
 backup/
 data/
-
+logs/
+results/
+testing/

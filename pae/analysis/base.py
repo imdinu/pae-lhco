@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractproperty, abstractmethod
 
-from density.estimators import GMM, ConvKDE
+from density.estimators import GMM, ConvKDE, KNNDensity
 from models.autoencoder import DenseAutoencoder
 from models.flows import CondMAF, MAF
 
@@ -40,7 +40,8 @@ class AbstractAnalysis(ABC):
 
     ESTIMATORS = {
         'gmm': GMM,
-        'fftkde': ConvKDE
+        'fftkde': ConvKDE,
+        'knn': KNNDensity
     }
 
     FLOWS = {

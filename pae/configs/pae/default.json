@@ -1,7 +1,7 @@
 {
     "ae_model": "dense_ae",
     "nf_model": "maf",
-    "AE:input_dim": 47,
+    "AE:input_dim": 45,
     "AE:encoding_dim": 10,
     "AE:units": [
         30,
@@ -26,10 +26,10 @@
     "ae_optimizer": "adam",
     "nf_optimizer": "adam",
     "ae_optimizer_kwargs": {
-        "lr": 0.001
+        "learning_rate": 0.001
     },
     "nf_optimizer_kwargs": {
-        "lr": 0.005
+        "learning_rate": 0.005
     },
     "ae_callbacks": [
         "reduce_lr_on_plateau"
