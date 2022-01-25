@@ -303,7 +303,7 @@ class DatasetBuilder(BaseDatasetBuilder):
 
         dataset = [loader.make_dataset(dataset_indices, exhaust=exhaust) 
                    for loader in self.loaders]
-        self.__check_loader_counts()
+        #self.__check_loader_counts()
 
         result = dict(ChainMap(*dataset))
 
@@ -320,17 +320,9 @@ class DatasetBuilder(BaseDatasetBuilder):
             if loader.name is None:
                 loader.name = f"DataLoader_{i:02d}"
 
-    def __check_loader_counts(self):
-        pass
-        # available = [loader._available_events for loader in self.loaders]
-        # if all(ele == available[0] for ele in available):
-        #     self._available_events = available[0]
-        # else:    
-        #     raise RuntimeError("Different number of available events across "
-        #                        "dataloaders")
         
     def __get_event_indexes(self, dataset_spec, replace, shuffle):
-        self.__check_loader_counts()
+        # self.__check_loader_counts()
         indices = {}
         for key, count in dataset_spec.items():
             if sum(self._available_events[key]) >= count or replace:
