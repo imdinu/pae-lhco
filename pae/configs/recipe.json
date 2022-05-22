@@ -1,11 +1,13 @@
-{   "ANA:loader": "../configs/loader/default_rnd.json",
-    "ANA:dataset": "../configs/loader/default_dataset.json",
-    "ANA:estimator": ["gmm", "fftkde"],
+{   
+    "ANA:folds": 5,
+    "ANA:estimator": "fftkde",
     "ANA:percentile": 95,
+    "ANA:fit_key": "mjj_test",
+    "ANA:sig_label": "box_s",
     "ae_model": "dense_ae",
-    "nf_model": ["maf","cond_maf"],
+    "nf_model": "maf",
     "AE:input_dim": 47,
-    "AE:encoding_dim": [5, 6, 7, 8, 9, 10, 11, 12],
+    "AE:encoding_dim": [5, 7, 10, 12],
     "AE:units": [[
         30,
         20,
@@ -14,10 +16,12 @@
     "AE:hidden_activation": "relu",
     "AE:output_activation": "sigmoid",
     "AE:weight_reg": [{
-        "l1": 1e-6
+        "l1": 20e-6,
+        "l2": 20e-5
     },
     {
-        "l1": 1e-5
+        "l1": 1e-5,
+        "l2": 1e-4
     }],
     "AE:bias_reg": {},
     "AE:output_reg": {},
@@ -32,10 +36,10 @@
     "ae_optimizer": "adam",
     "nf_optimizer": "adam",
     "ae_optimizer_kwargs": {
-        "lr": 0.001
+        "learning_rate": 0.001
     },
     "nf_optimizer_kwargs": {
-        "lr": 0.005
+        "learning_rate": 0.005
     },
     "ae_callbacks": [[
         "reduce_lr_on_plateau"

@@ -109,6 +109,7 @@ class Pae():
                 x_valid, _ = kwargs_nf['validation_data']
                 kwargs_nf['validation_data'] = (self.ae.encode(x_valid), np.zeros(x_valid.shape[0]))
             
+
             #Train Normalizing Flow
             self.history['nf']= self._nf.fit(x=z,
                                             y=np.zeros(z.shape),

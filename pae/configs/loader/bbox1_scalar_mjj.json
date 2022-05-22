@@ -1,0 +1,11 @@
+{
+    "name": "mjj",
+    "file_paths": {
+        "bkg": "../../data/BBOXMC_scalars_bkg.h5",
+        "box_s": "../../data/BBOX1_scalars_sig.h5",
+        "box_b": "../../data/BBOX1_scalars_bkg.h5"
+    },
+    "features": ["mj1j2"],
+    "scaler": null,
+    "scaler_kwargs": {}
+}

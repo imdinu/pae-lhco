@@ -28,8 +28,7 @@ from pae.loaders.LHCO import ScalarLoaderLHCO, DatasetBuilder
 
 from pae.plotting import feature_plots, loss_plot, latent_space_plot
 
-gpus = tf.config.list_physical_devices('GPU')
-if gpus:
+if gpus := tf.config.list_physical_devices('GPU'):
   try:
     # Currently, memory growth needs to be the same across GPUs
     for gpu in gpus:
@@ -69,8 +68,8 @@ x = ScalarLoaderLHCO.from_json("../pae/configs/loader/rnd_scalar_2j.json")
 mjj = ScalarLoaderLHCO.from_json("../pae/configs/loader/rnd_scalar_mjj.json")
 builder = DatasetBuilder(x, mjj)
 builder.data_preparation(sample_sizes ={'sig':100_000, 'bkg': 1_000_000}, fit_key='bkg')
-#dataset = builder.make_dataset(train = {'bkg':900_000}, test={'sig':100_000, 'bkg': 100_000})
-dataset = builder.make_dataset(train = {'bkg':9000}, test={'sig':100, 'bkg': 9900})
+dataset = builder.make_dataset(train = {'bkg':100_000}, test={'sig':100, 'bkg': 99_900})
+#dataset = builder.make_dataset(train = {'bkg':9000}, test={'sig':100, 'bkg': 9900})
 
 # Plot features
 fig = feature_plots(dataset['x_train'], 'dijet')
@@ -152,7 +151,7 @@ fig.write_image(run_dir / "weights_scatter.pdf")
 n_kde, b = np.histogram(mjj_train.ravel(), bins=20, weights=w_kde)
 # n_exp, _ = np.histogram(data, bins=b, weights=w_expnorm)
 # n_knn, _ = np.histogram(data, bins=b, weights=w_knn)
-fig = go.Figure()       
+fig = go.Figure()
 # fig.add_trace(go.Bar(x=b[:-1], y=n_gmm, name='GMM',
 #                         marker=dict(color='yellowgreen'))
 #             )
@@ -176,7 +175,7 @@ fig.write_image(run_dir / "reweighted_mass.pdf")
 
 
 
-kfold = KFold(11, shuffle=True)
+kfold = KFold(5, shuffle=True)
 folds = kfold.split(dataset["x_train"])
 
 enum_folds = enumerate(folds)
@@ -189,15 +188,15 @@ for i_fold, (x_train, x_valid) in enum_folds:
     builder = PaeBuilder()
     ae_config = {
         'input_dim':47, 
-        'encoding_dim':12, 
-        'units':[30, 20, 15],
-        'weight_reg':tfk.regularizers.L1L2(l1=25e-6, l2=25e-5),
+        'encoding_dim': 8, 
+        'units':[35, 28, 21],
+        'weight_reg':tfk.regularizers.L1L2(l1=1e-6, l2=1e-4),
         'output_activation':tf.nn.sigmoid
     }
     nf_config = {
-        'n_dims':12, 
-        'n_layers':5, 
-        'units':[32 for _ in range(4)]
+        'n_dims': 8, 
+        'n_layers': 7, 
+        'units':[28 for _ in range(4)]
     }
     optimizer_ae = {
         'learning_rate': 0.001
@@ -375,7 +374,7 @@ for i_fold, (x_train, x_valid) in enum_folds:
         mses2 = np.dot(reco_error,pae.sigma_square**(-1))
 
     # ANOMALY SCORE PLOTS
-    prc=90
+    prc=95
 
     x_min = np.percentile(ascore, 1)
     x_max = np.percentile(ascore, 99)
@@ -487,7 +486,65 @@ for i_fold, (x_train, x_valid) in enum_folds:
         )
     fig.write_image(run_dir / f"post_cut2_{i_fold:02d}.pdf") 
 
-    # In[ ]:
+    from pyBumpHunter import BumpHunter
+    import matplotlib.pyplot as plt
+
+    bkg = mjj.ravel()
+    data = mjj[i_prc].ravel()
+    weights = np.repeat(1/(bkg.shape[0]/data.shape[0]),bkg.shape[0])
+
+    hunter = BumpHunter(rang=(2500,4500),
+                        width_min=2,
+                        width_max=5,
+                        width_step=1,
+                        scan_step=1,
+                        Npe=10000,
+                        Nworker=1,
+                        seed=666,
+                        bins=50,
+                        weights=weights,
+                        useSideBand = True
+                        )
+
+    hunter.bump_scan(data,bkg)
+    hunter.min_loc_ar[0]
+    b = np.histogram_bin_edges(bkg, range=(2500,4500), bins=50)
+    fig = plt.figure(figsize=(12,8))
+    plt.hist([mjj[~sig_label&i_prc].ravel(), mjj[sig_label&i_prc].ravel()], bins=b, range=(2500,4500),
+                label=["data(bkg)", "data(sig)"],stacked = True)
+    plt.hist(bkg, bins=b, range=(2500,4500), label="bkg(ref)",stacked = True, histtype='step', weights=weights)
+    plt.legend()
+    plt.title("Distributions with bump")
+    plt.savefig(run_dir / f"bump_{i_fold:02d}.pdf")
+
+    #bump 2
+    bkg = mjj.ravel()
+    data = mjj[i_prc2].ravel()
+    weights = np.repeat(1/(bkg.shape[0]/data.shape[0]),bkg.shape[0])
+
+    hunter = BumpHunter(rang=(2500,4500),
+                        width_min=2,
+                        width_max=5,
+                        width_step=1,
+                        scan_step=1,
+                        Npe=10000,
+                        Nworker=1,
+                        seed=666,
+                        bins=50,
+                        weights=weights,
+                        useSideBand = True
+                        )
+
+    hunter.bump_scan(data,bkg)
+    hunter.min_loc_ar[0]
+    b = np.histogram_bin_edges(bkg, range=(2500,4500), bins=50)
+    fig = plt.figure(figsize=(12,8))
+    plt.hist([mjj[~sig_label&i_prc2].ravel(), mjj[sig_label&i_prc2].ravel()], bins=b, range=(2500,4500),
+                label=["data(bkg)", "data(sig)"],stacked = True)
+    plt.hist(bkg, bins=b, range=(2500,4500), label="bkg(ref)",stacked = True, histtype='step', weights=weights)
+    plt.legend()
+    plt.title("Distributions with bump")
+    plt.savefig(run_dir / f"bump2_{i_fold:02d}.pdf")
 
 
     from scipy.spatial.distance import jensenshannon
@@ -631,11 +688,21 @@ for i_fold, (x_train, x_valid) in enum_folds:
     import plotly.express as px
 
     def make_trace(labels, score, c, n=""):
-        fpr, tpr, _ = roc_curve(labels, score)
-        aauc = auc(1-fpr, tpr)
-        print(n,aauc)
-        return go.Scatter(x=tpr, y=1-fpr, mode='lines',
-            name=n+f"AUC:{aauc:.2f}", line=dict(color=c, width=2)), 1-fpr, tpr, aauc
+      fpr, tpr, _ = roc_curve(labels, score)
+      aauc = auc(1-fpr, tpr)
+      print(n,aauc)
+      return (
+          go.Scatter(
+              x=tpr,
+              y=1 - fpr,
+              mode='lines',
+              name=f"{n}AUC:{aauc:.2f}",
+              line=dict(color=c, width=2),
+          ),
+          1 - fpr,
+          tpr,
+          aauc,
+      )
 
 
     def binarize(label):
@@ -648,8 +715,9 @@ for i_fold, (x_train, x_valid) in enum_folds:
         go.Scatter(x=tpr, y=1-fpr, mode='lines',
             name=f"AUC:{pae_auc:.2f}", line=dict(color="Plum", width=2))
     )
-
-    dump_json({"fpr": (1-fpr).tolist(), "tpr": tpr.tolist(), "auc": pae_auc}, run_dir / f"roc_pae_{i_fold:02d}.json")
+    score = -pae.anomaly_score(dataset['x_test'])
+    roc_pae, fpr, tpr, a = make_trace(labels, score, 'plum')
+    dump_json({"fpr": fpr.tolist(), "tpr": tpr.tolist(), "auc": a}, run_dir / f"roc_pae_{i_fold:02d}.json")
     score = pae.reco_error(dataset['x_test'])
     roc_mse, fpr, tpr, a = make_trace(labels, score, 'steelblue')
     dump_json({"fpr": fpr.tolist(), "tpr": tpr.tolist(), "auc": a}, run_dir / f"roc_mse_{i_fold:02d}.json")
@@ -662,7 +730,7 @@ for i_fold, (x_train, x_valid) in enum_folds:
     fig = go.Figure()
 
 
-
+    fig.add_trace(roc_pae)
     fig.add_trace(roc_mse)
     fig.add_trace(roc_nmse)
     fig.add_trace(roc_lpz)

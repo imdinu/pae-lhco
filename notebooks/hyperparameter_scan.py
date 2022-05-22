@@ -12,10 +12,10 @@ sys.path.append("../")
 import plotly.io as pio
 pio.orca.config.use_xvfb = True
 
-from loaders.LHCO import LhcoRnDLoader
-from analysis.scalar import HLFAnalysis
-from models.nn import PaeBuilder
-from utils import load_json, dump_json
+from pae.loaders.LHCO import LhcoRnDLoader
+from pae.analysis.scalar import HLFAnalysis
+from pae.models.nn import PaeBuilder
+from pae.utils import load_json, dump_json
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:

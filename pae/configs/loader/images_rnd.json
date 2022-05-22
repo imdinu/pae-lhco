@@ -1,7 +1,7 @@
 {
     "name": "x",
     "file_paths": {
-        "bkg": "../data/RnD/bkg_imgs.h5",
-        "sig": "../data/RnD/sig_imgs.h5"
+        "bkg": "../../data/RnD_images_bkg.h5",
+        "sig": "../../data/RnD_images_sig.h5"
     }
 }

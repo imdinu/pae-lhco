@@ -2,9 +2,9 @@
 
 from abc import ABC, abstractproperty, abstractmethod
 
-from density.estimators import GMM, ConvKDE, KNNDensity
-from models.autoencoder import DenseAutoencoder
-from models.flows import CondMAF, MAF
+from pae.density.estimators import GMM, ConvKDE, KNNDensity
+from pae.models.autoencoder import DenseAutoencoder
+from pae.models.flows import CondMAF, MAF
 
 
 class AbstractAnalysis(ABC):
@@ -42,6 +42,12 @@ class AbstractAnalysis(ABC):
         'gmm': GMM,
         'fftkde': ConvKDE,
         'knn': KNNDensity
+    }
+
+    ESTIMATOR_KWARGS = {
+        'gmm': dict(n_components=200, covariance_type='full', max_iter=1_000, n_init=5),
+        'fftkde': dict(bw="silverman", kernel="box"),
+        'knn': dict()
     }
 
     FLOWS = {

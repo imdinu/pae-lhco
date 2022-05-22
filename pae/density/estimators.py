@@ -10,6 +10,8 @@ from sklearn.metrics import auc
 from scipy.interpolate import interp1d
 from scipy.stats import exponnorm 
 
+__all__ = ["GMM", "ConvKDE", "ExpnormFit", "KNNDensity"]
+
 class GMM(AbstractDensityEstimator):
     """Wrapper around scikit GaussianMixture"""
     

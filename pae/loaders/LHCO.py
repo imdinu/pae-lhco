@@ -168,7 +168,7 @@ class ImageLoaderLHCO(BaseDataloader):
             None
         """
         raise NotImplementedError("Jet images are already scaled")
-
+    
     def load_events(self, sample_sizes=None):
         """Loads events baswed on given sample_sizes.
 
@@ -188,12 +188,12 @@ class ImageLoaderLHCO(BaseDataloader):
 
         if isinstance(sample_sizes, dict):
             for key, size in sample_sizes.items():
-                data = h5py.File(self._file_paths[key], 'r')['multijet'][:size]
+                data = h5py.File(self._file_paths[key], 'r')[key][:size]
                 self._events[key] = data
                 self._available_events[key] = np.ones(len(data)).astype(bool)
         elif sample_sizes is None:
             for key, path in self._file_paths.items():
-                data = h5py.File(path, 'r')['multijet']
+                data = h5py.File(path, 'r')[key]
                 self._events[key] = data
                 self._available_events[key] = np.ones(len(data)).astype(bool)
         else:
